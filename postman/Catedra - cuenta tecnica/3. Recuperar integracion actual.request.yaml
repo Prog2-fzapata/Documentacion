@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseUrl}}/api/student/integration"
+method: GET
+headers:
+  Authorization: Bearer {{jwt}}
+order: 3000

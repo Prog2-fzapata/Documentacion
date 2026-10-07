@@ -1,0 +1,18 @@
+name: Catedra
+values:
+  - key: baseUrl
+    value: ''
+  - key: login
+    value: ''
+  - key: password
+    value: ''
+  - key: groupId
+    value: ''
+  - key: firstName
+    value: ''
+  - key: lastName
+    value: ''
+  - key: email
+    value: ''
+  - key: jwt
+    value: ''

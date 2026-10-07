@@ -1,0 +1,10 @@
+# Use this workspace to collaborate
+workspace:
+  id: 8d08b7e4-d0e9-4ec5-85c2-1f6972b0c55e
+
+localResources:
+  collections:
+    - ../Catedra - cuenta tecnica
+  environments:
+    - ../catedra.postman_environment.json
+    - ../Catedra.environment.yaml

@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/api/student/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "login": "{{login}}",
+      "password": "{{password}}",
+      "groupId": "{{groupId}}",
+      "firstName": "{{firstName}}",
+      "lastName": "{{lastName}}",
+      "email": "{{email}}",
+      "langKey": "es"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      if (pm.response.code === 201) {
+        pm.environment.set('jwt', pm.response.json().id_token);
+      }
+    language: text/javascript
+order: 1000
