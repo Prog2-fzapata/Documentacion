@@ -30,6 +30,8 @@ Estados: **Decidido**, **Propuesta** (acordada en lineas generales, sin confirma
 | D22 | Issues de KMP | **Se crean al terminar el backend**, no antes | Los 12 issues `KMP-01` a `KMP-12` siguen solo en planificacion.md |
 | D20 | Docker Compose | Vive en `Documentacion/infra/` | Implementado (issue `Documentacion#1`): `postgres:18` (PostgreSQL no tiene "LTS" oficial: cada version mayor recibe 5 años de soporte; la 18 es la mas reciente soportada hasta 2030), un script crea las dos bases y usuarios, puerto solo en `127.0.0.1`, claves en `.env` (fuera de git), healthcheck. Verificado: cada usuario accede a su base y recibe `permission denied` en la otra. Las claves con `$` se escriben `$$` en `.env`. Los servicios se agregan al compose cuando tengan Dockerfile |
 | D23 | Cuenta tecnica de la catedra | Colección Postman sin valores en `Documentacion/postman/`. Los datos de integración (JWT, Redis, Kafka) viven en `infra/.env` con prefijo `CATEDRA_`, fuera de git | El registro lo hace el usuario a mano, una sola vez. Issue `Documentacion#2` |
+| D24 | Stack backend | **Maven**, **Java 25** (Temurin 25.0.2 vía SDKMAN, ya instalado), **Spring Boot 4.1.1** | Spring Boot no tiene etiqueta LTS oficial: 4.1.1 es la última versión estable publicada (4.2 solo en milestones) |
+| D25 | Paquete raíz | `ar.com.um.prog2.fzapata.catalogo` (ServicioCatalogo) y `ar.com.um.prog2.fzapata.turnos` (ServicioTurnos) | Los slices cuelgan de esa raíz según la skill `hexagonal` |
 | D21 | Etiquetas de GitHub | Solo las por defecto (`enhancement`, `bug`, `documentation`); sin etiquetas propias | |
 | D18 | Push | **Nunca se pushea sin aprobacion explicita del usuario** | Tampoco se commitea sin pedido |
 
@@ -43,7 +45,7 @@ Estados: **Decidido**, **Propuesta** (acordada en lineas generales, sin confirma
 | P4 | Chequeo periodico de version de catalogo | Ademas de `CatalogUpdated`, comparar version local con Redis al arrancar y periodicamente (frecuencia a definir) |
 
 | P5 | Contratos entre app y backends | Borradores en [contratos/](contratos/00-convenciones.md): errores `problem+json` con `code`, paginacion JHipster, `404` tambien para recursos ajenos, `uid` solo desde el JWT, usuarios compatibles con JHipster (`/api/register`, `/api/authenticate`, `/api/account`), turnos usa `GET /api/professionals/{id}` de catalogo como agenda vigente, SSE en `/api/reservations/stream` |
-| P6 | Slices | `usuario` y `catalogo` (servicio catalogo); `disponibilidad` y `reserva` (servicio turnos). Casos de uso y puertos `in` en [06-casos-de-uso.md](diagramas/06-casos-de-uso.md) |
+| P6 | Slices | `usuario` y `catalogo` (servicio catalogo; `catalogo` agrupa categoria, profesional, horario y sincronizacion; el paquete queda `...fzapata.catalogo.catalogo`); `disponibilidad` y `reserva` (servicio turnos). Casos de uso y puertos `in` en [06-casos-de-uso.md](diagramas/06-casos-de-uso.md) |
 | P7 | Inicio de reserva en un solo endpoint | `POST /api/reservations` hace validacion con catalogo + hold + confirm y devuelve la reserva; nombre y apellido del paciente salen de los claims del JWT |
 
 ## Abiertas
