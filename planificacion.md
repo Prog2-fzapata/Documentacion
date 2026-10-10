@@ -30,21 +30,23 @@ Solo las que GitHub trae por defecto, sin etiquetas propias: `enhancement` (func
 
 ## Repo `Documentacion`
 
+Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, sincronización, idempotencia, seguridad, evidencias) viven en cada repo de servicio y se escriben al implementar (ver D31 en decisiones.md). Los issues `DOC-03` a `DOC-06` se movieron allí. Quedan sin issue propio, para crear cuando corresponda: modelo de datos, contrato entre los dos servicios y resumen de decisiones de diseño.
+
 | Codigo | Issue | Milestone | Criterio de aceptacion |
 | --- | --- | --- | --- |
-| DOC-01 | Docker Compose con Postgres (dos bases logicas) | M1 | Carpeta `infra/` en este repo. Un script crea `catalogo_db` y `turnos_db` con usuarios sin permisos cruzados; `docker compose up` los levanta |
+| DOC-01 | Docker Compose con Postgres | M1 | **Reemplazado**: el compose vive en cada repo de servicio con su propio Postgres (ver CAT-02 y TUR-02) |
 | DOC-02 | Registrar cuenta tecnica en la catedra (Postman) | M1 | Coleccion Postman en el repo **sin secretos**; `.env.example` con todas las claves; JWT y config guardados fuera de git |
-| DOC-03 | Estrategia de sincronizacion e idempotencia (texto) | M6 | Explicacion pedida por el enunciado §12 |
-| DOC-04 | Seguridad: decisiones y limitaciones | M6 | JWT, propagacion, secretos, CORS, limitaciones |
-| DOC-05 | README final y diagrama de arquitectura | M7 | Pasos reproducibles; ejecucion de pruebas; diagrama con app, servicios, BDs e integraciones |
-| DOC-06 | Evidencias minimas (§11) | M7 | Lista verificable de las 12 evidencias con como demostrarlas |
+| DOC-03 | Estrategia de sincronizacion e idempotencia (texto) | M6 | **Movido** a los repos de servicio: `ServicioCatalogo#22` y `#23`, `ServicioTurnos#24` |
+| DOC-04 | Seguridad: decisiones y limitaciones | M6 | **Movido**: `ServicioCatalogo#24` y `ServicioTurnos#25` |
+| DOC-05 | README final y diagrama de arquitectura | M7 | **Movido**: `ServicioCatalogo#25` y `ServicioTurnos#26` |
+| DOC-06 | Evidencias minimas (§11) | M7 | **Movido**: `ServicioCatalogo#26` y `ServicioTurnos#27` |
 
 ## Repo `ServicioCatalogo`
 
 | Codigo | Issue | Milestone | Criterio de aceptacion |
 | --- | --- | --- | --- |
 | CAT-01 | Proyecto Spring Boot base y estructura hexagonal | M1 | Esqueleto con la skill `hexagonal`; Flyway; configuracion por variables de entorno; arranca contra `catalogo_db` |
-| CAT-02 | Dockerfile y configuracion del servicio | M1 | Imagen construye; se levanta con el compose; sin secretos en el repo |
+| CAT-02 | Dockerfile y configuracion del servicio | M1 | Dockerfile multi-stage; `docker-compose.yml` propio con su PostgreSQL y `.env.example`; se levanta con `docker compose up -d --build`; sin secretos en el repo |
 | CAT-03 | Slice `usuario`: registro | M2 | `POST /api/register` segun contrato; hash BCrypt; usuario activo; validaciones; tests |
 | CAT-04 | Slice `usuario`: autenticacion y emision del JWT | M2 | `POST /api/authenticate`, `GET /api/account`; claims `sub`, `uid`, `auth`, nombres; 401 en credenciales invalidas; tests |
 | CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | Todo protegido salvo registro y login; CORS por variable de entorno; tests de rechazo |

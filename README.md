@@ -5,7 +5,6 @@ Borradores de analisis y diseño. Los diagramas usan Mermaid (se ven en GitHub, 
 | Archivo | Contenido |
 | --- | --- |
 | [decisiones.md](decisiones.md) | **Registro de decisiones y preguntas abiertas** (leer primero) |
-| [infra/README.md](infra/README.md) | Docker Compose: PostgreSQL con dos bases logicas |
 | [planificacion.md](planificacion.md) | Milestones, issues por repo, orden de ataque y dependencias |
 | [.claude/skills/hexagonal](.claude/skills/hexagonal/SKILL.md) | Skill de arquitectura hexagonal de la catedra |
 | [diagramas/01-arquitectura.md](diagramas/01-arquitectura.md) | Componentes, integraciones e identidades |
