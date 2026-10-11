@@ -22,10 +22,10 @@ Compatibles con JHipster (requisito del enunciado).
 
 | Campo | Obligatorio | Restricciones |
 | --- | --- | --- |
-| `login` | si | 1 a 50, patron de login JHipster, unico |
+| `login` | si | 3 a 50, patron de login JHipster, unico sin distinguir mayusculas (se guarda en minusculas) |
 | `password` | si | 4 a 100 |
-| `firstName`, `lastName` | si (ver A7) | 2 a 50 |
-| `email` | si | email valido, 5 a 254, unico |
+| `firstName`, `lastName` | no (se exigen al reservar, D33) | hasta 50 |
+| `email` | si | email valido, 5 a 254, unico sin distinguir mayusculas (se guarda en minusculas) |
 | `imageUrl` | no | hasta 256 |
 | `langKey` | no | 2 a 10, por defecto `es` |
 
@@ -44,6 +44,16 @@ Errores: `400 VALIDATION_ERROR`, `400 LOGIN_ALREADY_USED`, `400 EMAIL_ALREADY_US
 ### `GET /api/account`
 
 `200 OK`: `{ "id", "login", "firstName", "lastName", "email", "imageUrl", "langKey", "authorities": ["ROLE_USER"] }`. Nunca incluye la contraseña.
+
+### `POST /api/account`
+
+Actualiza los datos del usuario autenticado (como JHipster). El usuario sale del JWT, nunca del body.
+
+```json
+{ "firstName": "Juan", "lastName": "Perez", "email": "juan@example.com", "imageUrl": null, "langKey": "es" }
+```
+
+`200 OK` sin cuerpo. Mismas restricciones que el registro. `login`, contraseña, autoridades e `id` no se pueden cambiar por aca. Errores: `400 VALIDATION_ERROR`, `400 EMAIL_ALREADY_USED`.
 
 ## Catalogo (solo lectura, desde la copia local)
 

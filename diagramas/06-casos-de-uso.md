@@ -83,6 +83,7 @@ flowchart LR
 | Registrar usuario | `RegisterUserUseCase` | `POST /api/register` |
 | Autenticar usuario | `AuthenticateUserUseCase` | `POST /api/authenticate` |
 | Consultar cuenta actual | `GetCurrentUserUseCase` | `GET /api/account` |
+| Actualizar cuenta actual | `UpdateCurrentUserUseCase` | `POST /api/account` |
 
 ### catalogo
 

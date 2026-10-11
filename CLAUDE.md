@@ -28,7 +28,7 @@ Toda decision, cambio de diseño o pregunta abierta que surja en la conversacion
 
 ## Estilo de codigo y archivos
 
-- **Pocos comentarios.** No explicar cada linea dentro de los archivos (compose, scripts, config, codigo); las explicaciones van en la respuesta o en el README. Solo comentar lo que no se pueda deducir.
+- **Comentarios breves y con sentido.** No explicar cada linea; sí agregar comentarios de una linea que expliquen el *porque* (reglas de negocio, decisiones no obvias, trampas). Las explicaciones largas van en la respuesta o en el README. En los tests, los metodos auxiliares van arriba, antes de los `@Test`.
 - El proyecto es educativo: las claves de `.env` no son sensibles y se pueden leer. Aun asi, `.env` nunca se versiona.
 
 ## Idioma

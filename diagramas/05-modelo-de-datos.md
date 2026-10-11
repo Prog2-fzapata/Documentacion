@@ -6,12 +6,12 @@ Cada servicio tiene su **propia base logica** en PostgreSQL, con usuario propio 
 
 ```mermaid
 erDiagram
-    APP_USER ||--o{ USER_AUTHORITY : tiene
-    AUTHORITY ||--o{ USER_AUTHORITY : asignada
+    USERS ||--o{ USER_AUTHORITIES : tiene
+    AUTHORITIES ||--o{ USER_AUTHORITIES : asignada
     PROFESSIONAL_CATEGORY ||--o{ PROFESSIONAL : agrupa
     PROFESSIONAL ||--o{ WEEKLY_SCHEDULE : atiende
 
-    APP_USER {
+    USERS {
         bigint id PK
         string login UK
         string password_hash
@@ -24,10 +24,10 @@ erDiagram
         timestamp created_date
         timestamp last_modified_date
     }
-    AUTHORITY {
+    AUTHORITIES {
         string name PK
     }
-    USER_AUTHORITY {
+    USER_AUTHORITIES {
         bigint user_id FK
         string authority_name FK
     }
@@ -79,7 +79,7 @@ Notas:
 - Las entidades del catalogo conservan el **ID de la catedra** como clave primaria (no se generan IDs propios), para poder aplicar cambios por ID.
 - Las bajas de la catedra son logicas (`enabled = false`): se guardan, no se borran.
 - `SYNC_STATE.local_version` solo se actualiza en la misma transaccion que aplica los datos.
-- `APP_USER` y `AUTHORITY` replican el modelo de usuario de JHipster (requisito de compatibilidad del enunciado).
+- `USERS` y `AUTHORITIES` replican el modelo de usuario de JHipster (requisito de compatibilidad del enunciado).
 - `SYNC_STATE` cubre "informar estado y errores de sincronizacion" (4.1).
 
 ## Servicio Turnos (`turnos_db`)
@@ -147,7 +147,7 @@ Notas:
 flowchart LR
     subgraph CAT["catalogo_db"]
         P["PROFESSIONAL"]
-        U["APP_USER"]
+        U["USERS"]
     end
     subgraph TUR["turnos_db"]
         R["RESERVATION_PROCESS"]
@@ -160,6 +160,6 @@ Las lineas punteadas son referencias **por valor**. El servicio de turnos nunca 
 
 ## Decisiones
 
-- **Identificador del usuario:** el `id` numerico de `APP_USER`, incluido como claim en el JWT y enviado como texto en `externalPatientId`. Es inmutable, a diferencia de cualquier dato editable, y la catedra asocia las reservas a ese valor.
+- **Identificador del usuario:** el `id` numerico de `USERS`, incluido como claim en el JWT y enviado como texto en `externalPatientId`. Es inmutable, a diferencia de cualquier dato editable, y la catedra asocia las reservas a ese valor.
 - **Telefono:** se conserva en `RESERVATION_PROCESS.patient_phone` (la catedra tambien lo devuelve en el listado).
 - **Indices:** por `user_id`, por `status` + `expires_at` (job de recuperacion) y por `status` en `OUTBOX`.

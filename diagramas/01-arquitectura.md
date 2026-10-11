@@ -58,8 +58,7 @@ flowchart TB
     TUR -- "JWT tecnico (nunca sale del backend)" --> API["API catedra"]
 ```
 
-## Decisiones abiertas
+## Decisiones
 
-- **[decidir]** Quien emite el JWT de usuario (propuesta: Catalogo, estilo JHipster) y como lo valida Turnos (secreto compartido HS256 o clave publica RSA).
-- **[decidir]** Comunicacion Turnos -> Catalogo: propagar el JWT del usuario (propuesta, preserva identidad y trazabilidad) o usar un JWT tecnico interno.
-- **[decidir]** Motor de BD de cada servicio (ambos en un mismo PostgreSQL con esquemas separados es lo mas simple).
+- Catalogo emite el JWT de usuario (D2); Turnos lo valida con HS256 y secreto compartido (D32) y lo propaga al llamar a Catalogo (D3).
+- Cada servicio tiene su propia instancia de PostgreSQL (D4, D20).

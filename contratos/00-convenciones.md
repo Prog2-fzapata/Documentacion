@@ -12,7 +12,7 @@
 ## Autenticacion
 
 - Todo es protegido salvo `POST /api/register` y `POST /api/authenticate`. Cabecera `Authorization: Bearer <jwt-usuario>`.
-- **El servicio de catalogo emite el JWT**; turnos lo valida (firma, vigencia, autoridades). Metodo de validacion: ver A3 en decisiones.
+- **El servicio de catalogo emite el JWT**; turnos lo valida (firma, vigencia, autoridades). Firma HS256 con secreto compartido (D32 en decisiones).
 - Claims propuestos:
 
 | Claim | Contenido |
@@ -20,9 +20,9 @@
 | `sub` | `login` del usuario |
 | `uid` | `id` numerico del usuario (se envia a la catedra como `externalPatientId`) |
 | `auth` | autoridades, p. ej. `ROLE_USER` |
-| `firstName`, `lastName` | datos del paciente para confirmar la reserva |
 | `iat`, `exp` | emision y vencimiento |
 
+- El nombre y apellido del paciente **no** van en el JWT (un claim queda fijo al emitirlo): turnos los consulta en `GET /api/account` de catalogo al reservar (D34).
 - El `uid` **siempre** sale del JWT; ningun endpoint lo acepta en el body o la URL.
 - Turnos propaga el mismo JWT cuando llama a catalogo.
 - El JWT tecnico de la catedra no aparece en ningun contrato de este proyecto.
@@ -42,7 +42,7 @@ Formato `application/problem+json`, igual al de la catedra y JHipster:
 }
 ```
 
-En errores de validacion se agrega `fieldErrors: [{ "objectName", "field", "message" }]` y `code = VALIDATION_ERROR`. El cliente decide por `status` y `code`, nunca por `detail`.
+En errores de validacion se agrega `fieldErrors: [{ "objectName", "field", "message" }]` y `code = VALIDATION_ERROR`. El cliente decide por `status` y `code`, nunca por `detail`. Todo el `detail` está en español. Spring agrega además el campo `instance`, igual a `path`; los clientes lo ignoran.
 
 Errores comunes:
 
@@ -51,6 +51,10 @@ Errores comunes:
 | 400 | `VALIDATION_ERROR` | body o parametros invalidos |
 | 401 | (sin garantia) | falta JWT, firma invalida o vencido |
 | 403 | (sin garantia) | autenticado sin permiso |
+| 400 | `BAD_REQUEST` | solicitud inválida que Spring detecta antes del controller (parámetro mal tipado, etc.) |
+| 404 | `NOT_FOUND` | ruta inexistente |
+| 405 | `METHOD_NOT_ALLOWED` | método HTTP no permitido para la ruta |
+| 415 | `UNSUPPORTED_MEDIA_TYPE` | `Content-Type` no soportado |
 | 404 | `*_NOT_FOUND` | recurso inexistente **o ajeno** (no se distingue, para no revelar existencia) |
 | 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` | dependencia requerida caida o con timeout |
 | 500 | (sin garantia) | error inesperado, sin detalles internos |
