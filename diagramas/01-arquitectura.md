@@ -60,5 +60,5 @@ flowchart TB
 
 ## Decisiones
 
-- Catalogo emite el JWT de usuario (D2); Turnos lo valida con HS256 y secreto compartido (D32) y lo propaga al llamar a Catalogo (D3).
+- Catalogo emite el JWT de usuario (D2); Turnos lo valida con HS512 y secreto compartido (D32) y lo propaga al llamar a Catalogo (D3).
 - Cada servicio tiene su propia instancia de PostgreSQL (D4, D20).

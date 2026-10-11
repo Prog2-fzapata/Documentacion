@@ -48,8 +48,8 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | CAT-01 | Proyecto Spring Boot base y estructura hexagonal | M1 | Esqueleto con la skill `hexagonal`; Flyway; configuracion por variables de entorno; arranca contra `catalogo_db` |
 | CAT-02 | Dockerfile y configuracion del servicio | M1 | Dockerfile multi-stage; `docker-compose.yml` propio con su PostgreSQL y `.env.example`; se levanta con `docker compose up -d --build`; sin secretos en el repo |
 | CAT-03 | Slice `usuario`: registro | M2 | `POST /api/register` segun contrato; hash BCrypt; usuario activo; validaciones; tests |
-| CAT-04 | Slice `usuario`: autenticacion y emision del JWT | M2 | `POST /api/authenticate`, `GET /api/account`; claims `sub`, `uid`, `auth`, nombres; 401 en credenciales invalidas; tests |
-| CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | Todo protegido salvo registro y login; CORS por variable de entorno; tests de rechazo |
+| CAT-04 | Slice `usuario`: autenticacion y emision del JWT | M2 | `POST /api/authenticate` (`rememberMe`), `GET` y `POST /api/account` (D34); firma HS512 (D32); claims `sub`, `uid`, `auth`, `iat` y `exp` (sin nombres); 401 en credenciales invalidas; tests. Incluye la validacion del JWT (D47) |
+| CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | La validacion base ya esta desde CAT-04 (D47). Queda: 401 y 403 en `problem+json`, CORS por variable de entorno, tests de rechazo |
 | CAT-06 | Modelo del catalogo y migraciones | M3 | Tablas de categoria, profesional, horario, `sync_state`, `processed_event` segun [05](diagramas/05-modelo-de-datos.md) |
 | CAT-07 | Cliente de la catedra: snapshot REST con JWT tecnico | M3 | Puerto `out` + adapter; timeout configurable; errores traducidos; JWT tecnico solo por entorno |
 | CAT-08 | Sincronizacion completa (snapshot) | M3 | Reemplazo atomico de las 3 colecciones y de la version en una transaccion; falla = no cambia nada; tests |
@@ -119,3 +119,17 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 - TUR-08 depende de TUR-04, TUR-05, TUR-06 y TUR-09.
 - TUR-11 depende de TUR-10 (necesita `requestEventId`).
 - KMP-07 y TUR-11 dependen de resolver A8. TUR-11 y TUR-17 dependen de la respuesta del profesor (A1) solo para documentar el comportamiento, no para implementarse.
+
+## Issues de documentación agregados (2026-10-11)
+
+Entregables del §12 que no tenían issue. Viven en cada repo de servicio y se escriben al implementar lo que describen.
+
+| Repo | Issue | Milestone | Entregable |
+| --- | --- | --- | --- |
+| ServicioCatalogo | #28 | M3 | `docs/modelo-de-datos.md`: tablas, propiedad de los datos |
+| ServicioCatalogo | #29 | M3 | `docs/contrato.md`: operaciones, DTO, autenticación y errores |
+| ServicioTurnos | #28 | M1 | `docs/decisiones.md` con las decisiones del esqueleto |
+| ServicioTurnos | #29 | M2 | `docs/modelo-de-datos.md` |
+| ServicioTurnos | #30 | M5 | `docs/contrato.md`, incluido su uso del contrato de catálogo |
+
+El registro de decisiones del servicio de catálogo (`docs/decisiones.md`) ya existe y se amplía en cada implementación; no lleva issue porque es un registro vivo.

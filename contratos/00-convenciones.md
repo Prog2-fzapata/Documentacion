@@ -12,14 +12,14 @@
 ## Autenticacion
 
 - Todo es protegido salvo `POST /api/register` y `POST /api/authenticate`. Cabecera `Authorization: Bearer <jwt-usuario>`.
-- **El servicio de catalogo emite el JWT**; turnos lo valida (firma, vigencia, autoridades). Firma HS256 con secreto compartido (D32 en decisiones).
+- **El servicio de catalogo emite el JWT**; turnos lo valida (firma, vigencia, autoridades). Firma **HS512** con secreto compartido en Base64 de al menos 512 bits (D32 y D45 en decisiones); turnos solo acepta HS512. Vigencia de 24 horas, o 30 días con `rememberMe`.
 - Claims propuestos:
 
 | Claim | Contenido |
 | --- | --- |
 | `sub` | `login` del usuario |
 | `uid` | `id` numerico del usuario (se envia a la catedra como `externalPatientId`) |
-| `auth` | autoridades, p. ej. `ROLE_USER` |
+| `auth` | autoridades separadas por espacio, p. ej. `ROLE_USER` (como JHipster) |
 | `iat`, `exp` | emision y vencimiento |
 
 - El nombre y apellido del paciente **no** van en el JWT (un claim queda fijo al emitirlo): turnos los consulta en `GET /api/account` de catalogo al reservar (D34).

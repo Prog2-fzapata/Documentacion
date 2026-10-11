@@ -7,6 +7,7 @@ Borradores de analisis y diseño. Los diagramas usan Mermaid (se ven en GitHub, 
 | [decisiones.md](decisiones.md) | **Registro de decisiones y preguntas abiertas** (leer primero) |
 | [planificacion.md](planificacion.md) | Milestones, issues por repo, orden de ataque y dependencias |
 | [.claude/skills/hexagonal](.claude/skills/hexagonal/SKILL.md) | Skill de arquitectura hexagonal de la catedra |
+| [.claude/skills/repaso](.claude/skills/repaso/SKILL.md) | Skill `/repaso`: guarda el estado de trabajo y lo retoma tras un `/clear` o `/compact` |
 | [diagramas/01-arquitectura.md](diagramas/01-arquitectura.md) | Componentes, integraciones e identidades |
 | [diagramas/02-sincronizacion-catalogo.md](diagramas/02-sincronizacion-catalogo.md) | Sincronizacion completa e incremental |
 | [diagramas/03-flujo-reserva.md](diagramas/03-flujo-reserva.md) | Disponibilidad, reserva, consulta y cancelacion |

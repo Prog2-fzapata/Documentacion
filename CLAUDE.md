@@ -8,6 +8,7 @@ Carpeta de trabajo local (no es un repo). Contiene cuatro repos independientes: 
 2. Los contratos externos estan en `INTEGRATION_REFERENCE-v2.md`; el alcance en `PROJECT_STATEMENT-v1.md`.
 3. Diagramas en `Documentacion/diagramas/`.
 4. Usar la skill `hexagonal` para todo codigo backend (vive en `Documentacion/.claude/skills/hexagonal`; `.claude/skills/hexagonal` es un enlace simbolico).
+5. Antes de un `/clear` o `/compact`, y de nuevo despues, usar `/repaso` (guarda y retoma el estado de trabajo; ver `.claude/skills/repaso`).
 
 ## Donde vive cada documento
 
