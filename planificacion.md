@@ -1,20 +1,20 @@
 # Planificacion: milestones e issues
 
-Borrador para cargar en GitHub. Criterio: **milestones por entrega vertical**, cada uno deja algo demostrable. Los milestones se crean con el mismo nombre en los cuatro repos y cada issue pertenece al repo donde se implementa. Entrega final: ultimos dias de noviembre 2026 (fecha exacta pendiente de la catedra). Las fechas son **tentativas** y deben ajustarse a las reuniones quincenales con el profesor.
+Borrador para cargar en GitHub. Criterio: **milestones por entrega vertical**, cada uno deja algo demostrable. Los milestones se crean con el mismo nombre en los cuatro repos y cada issue pertenece al repo donde se implementa. Entrega final: ultimos dias de noviembre 2026 (fecha exacta pendiente de la catedra). Los milestones **no tienen fecha de vencimiento**: son un orden de trabajo, no plazos; las entregas parciales las fija el profesor en las reuniones quincenales.
 
 Los codigos (`CAT-01`, `TUR-01`, `KMP-01`, `DOC-01`) son solo para referenciar dependencias aqui; GitHub asignara sus propios numeros.
 
 ## Milestones
 
-| Milestone | Objetivo demostrable | Fecha tentativa |
-| --- | --- | --- |
-| **M1 - Base e infraestructura** | Los dos servicios y las bases levantan con Docker Compose; cuenta tecnica registrada; esqueletos hexagonales | 14 oct |
-| **M2 - Usuarios y seguridad** | Registro y login desde la app; JWT validado en ambos servicios; accesos no autenticados rechazados | 21 oct |
-| **M3 - Catalogo y sincronizacion** | Snapshot, incremental por Kafka+Redis, recuperacion; busqueda con filtros en la app | 4 nov |
-| **M4 - Disponibilidad** | La app muestra turnos libres de un profesional | 11 nov |
-| **M5 - Reserva** | Reserva completa REST+Kafka, SSE, consulta y cancelacion propias | 18 nov |
-| **M6 - Robustez y pruebas** | Duplicados, vencimientos, reinicios, recuperacion; pruebas backend obligatorias | 22 nov |
-| **M7 - Documentacion y entrega** | README, diagramas finales, evidencias, ensayo de defensa | 25 nov |
+| Milestone | Objetivo demostrable |
+| --- | --- |
+| **M1 - Base e infraestructura** | Los dos servicios y las bases levantan con Docker Compose; cuenta tecnica registrada; esqueletos hexagonales |
+| **M2 - Usuarios y seguridad** | Registro y login desde la app; JWT validado en ambos servicios; accesos no autenticados rechazados |
+| **M3 - Catalogo y sincronizacion** | Snapshot, incremental por Kafka+Redis, recuperacion; busqueda con filtros en la app |
+| **M4 - Disponibilidad** | La app muestra turnos libres de un profesional |
+| **M5 - Reserva** | Reserva completa REST+Kafka, SSE, consulta y cancelacion propias |
+| **M6 - Robustez y pruebas** | Duplicados, vencimientos, reinicios, recuperacion; pruebas backend obligatorias |
+| **M7 - Documentacion y entrega** | README, diagramas finales, evidencias, ensayo de defensa |
 
 ## Etiquetas (labels)
 
@@ -49,7 +49,7 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | CAT-02 | Dockerfile y configuracion del servicio | M1 | Dockerfile multi-stage; `docker-compose.yml` propio con su PostgreSQL y `.env.example`; se levanta con `docker compose up -d --build`; sin secretos en el repo |
 | CAT-03 | Slice `usuario`: registro | M2 | `POST /api/register` segun contrato; hash BCrypt; usuario activo; validaciones; tests |
 | CAT-04 | Slice `usuario`: autenticacion y emision del JWT | M2 | `POST /api/authenticate` (`rememberMe`), `GET` y `POST /api/account` (D34); firma HS512 (D32); claims `sub`, `uid`, `auth`, `iat` y `exp` (sin nombres); 401 en credenciales invalidas; tests. Incluye la validacion del JWT (D47) |
-| CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | La validacion base ya esta desde CAT-04 (D47). Queda: 401 y 403 en `problem+json`, CORS por variable de entorno, tests de rechazo |
+| CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | La validacion base ya esta desde CAT-04 (D47). Queda: 401 y 403 en `problem+json`, tests de rechazo y esquema Bearer en Swagger. CORS pospuesto (A16) |
 | CAT-06 | Modelo del catalogo y migraciones | M3 | Tablas de categoria, profesional, horario, `sync_state`, `processed_event` segun [05](diagramas/05-modelo-de-datos.md) |
 | CAT-07 | Cliente de la catedra: snapshot REST con JWT tecnico | M3 | Puerto `out` + adapter; timeout configurable; errores traducidos; JWT tecnico solo por entorno |
 | CAT-08 | Sincronizacion completa (snapshot) | M3 | Reemplazo atomico de las 3 colecciones y de la version en una transaccion; falla = no cambia nada; tests |

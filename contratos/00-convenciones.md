@@ -7,7 +7,7 @@
 - Prefijo `/api/`. JSON en `camelCase`. Fechas `yyyy-MM-dd`, instantes ISO-8601 UTC, horas `HH:mm:ss` (se aceptan `HH:mm` y `HH:mm:ss`).
 - HTTPS hacia el cliente en entornos reales (en local Compose puede ser HTTP; se documenta como limitacion).
 - Paginacion estilo Spring/JHipster: `page`, `size`, `sort`. La respuesta es un arreglo JSON con cabeceras `X-Total-Count` y `Link`.
-- CORS: solo origenes configurados por variable de entorno.
+- CORS: sin configurar por ahora (A16); la app es Android y CORS solo lo aplican los navegadores.
 
 ## Autenticacion
 
@@ -49,8 +49,8 @@ Errores comunes:
 | HTTP | `code` | Cuando |
 | --- | --- | --- |
 | 400 | `VALIDATION_ERROR` | body o parametros invalidos |
-| 401 | (sin garantia) | falta JWT, firma invalida o vencido |
-| 403 | (sin garantia) | autenticado sin permiso |
+| 401 | `UNAUTHORIZED` | falta JWT, firma invalida o vencido (no se distingue el motivo; cabecera `WWW-Authenticate: Bearer`) |
+| 403 | `FORBIDDEN` | autenticado sin permiso |
 | 400 | `BAD_REQUEST` | solicitud inválida que Spring detecta antes del controller (parámetro mal tipado, etc.) |
 | 404 | `NOT_FOUND` | ruta inexistente |
 | 405 | `METHOD_NOT_ALLOWED` | método HTTP no permitido para la ruta |
