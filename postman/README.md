@@ -4,8 +4,8 @@ Colección para registrar una sola vez la cuenta técnica del proyecto y recuper
 
 ## Uso
 
-1. En Postman, importar `catedra.postman_collection.json` y `catedra.postman_environment.json`.
-2. Seleccionar el entorno **Catedra** y completar sus variables (`baseUrl` es la URL base que envía la cátedra, sin `/` final).
+1. En Postman (modo local), abrir esta carpeta como workspace: la colección está en `postman/collections/` y el entorno en `postman/environments/`. Para validar los archivos: `postman workspace lint`.
+2. Seleccionar el entorno **Catedra** y completar sus variables (`baseUrl` es la URL base que envía la cátedra, sin `/` final). Postman guarda esos valores en el archivo del entorno, que está versionado: antes de cada commit revisar `git diff` y no subir `login`, `password` ni `jwt`.
 3. Ejecutar **1. Registrar cuenta técnica**. Se hace una sola vez: `login`, `email` y `groupId` quedan ocupados.
 4. Guardar los valores de la respuesta (`id_token` y el objeto `integration`) en el `.env` de cada servicio que los use, que no se versiona. Los nombres de las variables `CATEDRA_*` se definen en el `.env.example` de cada servicio a medida que se usan.
 5. Si hace falta otro JWT o releer la configuración, usar **2.** o **3.**; no se vuelve a registrar.

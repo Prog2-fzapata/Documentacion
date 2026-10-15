@@ -4,7 +4,6 @@ workspace:
 
 localResources:
   collections:
-    - ../Catedra - cuenta tecnica
+    - ../postman/collections/Catedra - cuenta tecnica
   environments:
-    - ../catedra.postman_environment.json
-    - ../Catedra.environment.yaml
+    - ../postman/environments/Catedra.environment.yaml
