@@ -8,8 +8,8 @@ Cada servicio tiene su **propia base logica** en PostgreSQL, con usuario propio 
 erDiagram
     USERS ||--o{ USER_AUTHORITIES : tiene
     AUTHORITIES ||--o{ USER_AUTHORITIES : asignada
-    PROFESSIONAL_CATEGORY ||--o{ PROFESSIONAL : agrupa
-    PROFESSIONAL ||--o{ WEEKLY_SCHEDULE : atiende
+    PROFESSIONAL_CATEGORIES ||--o{ PROFESSIONALS : agrupa
+    PROFESSIONALS ||--o{ WEEKLY_SCHEDULES : atiende
 
     USERS {
         bigint id PK
@@ -31,7 +31,7 @@ erDiagram
         bigint user_id FK
         string authority_name FK
     }
-    PROFESSIONAL_CATEGORY {
+    PROFESSIONAL_CATEGORIES {
         bigint id PK "id de catedra"
         string name
         string description
@@ -39,7 +39,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    PROFESSIONAL {
+    PROFESSIONALS {
         bigint id PK "id de catedra"
         bigint category_id FK
         string first_name
@@ -48,7 +48,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    WEEKLY_SCHEDULE {
+    WEEKLY_SCHEDULES {
         bigint id PK "id de catedra"
         bigint professional_id FK
         string day_of_week
@@ -67,7 +67,7 @@ erDiagram
         string last_status "OK o ERROR"
         string last_error
     }
-    PROCESSED_EVENT {
+    PROCESSED_EVENTS {
         string event_id PK
         string event_type
         timestamp processed_at
@@ -80,7 +80,8 @@ Notas:
 - Las bajas de la catedra son logicas (`enabled = false`): se guardan, no se borran.
 - `SYNC_STATE.local_version` solo se actualiza en la misma transaccion que aplica los datos.
 - `USERS` y `AUTHORITIES` replican el modelo de usuario de JHipster (requisito de compatibilidad del enunciado).
-- `SYNC_STATE` cubre "informar estado y errores de sincronizacion" (4.1).
+- `SYNC_STATE` cubre "informar estado y errores de sincronizacion" (4.1). La migracion crea su unica fila (`id = 1`, `local_version = 0`).
+- Los nombres de las tablas van en plural (convencion de la catedra); `SYNC_STATE` queda en singular por ser una sola fila. Las tablas de turnos se nombran igual al implementar TUR-04.
 
 ## Servicio Turnos (`turnos_db`)
 
@@ -146,7 +147,7 @@ Notas:
 ```mermaid
 flowchart LR
     subgraph CAT["catalogo_db"]
-        P["PROFESSIONAL"]
+        P["PROFESSIONALS"]
         U["USERS"]
     end
     subgraph TUR["turnos_db"]
