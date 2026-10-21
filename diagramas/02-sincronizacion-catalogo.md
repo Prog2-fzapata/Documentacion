@@ -51,15 +51,28 @@ sequenceDiagram
     participant C as Servicio Catalogo
     participant DB as BD catalogo
 
+    Note over C: candado en memoria: una sincronizacion a la vez
     C->>A: GET /api/synchronization/snapshot
     A-->>C: snapshotVersion + 3 colecciones
-    C->>DB: BEGIN
-    C->>DB: reemplazar categorias, profesionales y horarios
-    C->>DB: version local = snapshotVersion
-    C->>DB: COMMIT
+    alt aplica bien
+        C->>DB: BEGIN
+        C->>DB: SELECT sync_state FOR UPDATE
+        C->>DB: leer categorias, profesionales y horarios actuales
+        C->>DB: INSERT o UPDATE solo lo nuevo o lo que cambio (categorias, profesionales, horarios)
+        C->>DB: DELETE lo que ya no llega (horarios, profesionales, categorias)
+        C->>DB: version local = snapshotVersion, last_status = OK
+        C->>DB: COMMIT
+    else falla la catedra o la transaccion
+        Note over C,DB: si habia transaccion, ROLLBACK: ni datos ni version cambian
+        C->>DB: BEGIN (transaccion aparte)
+        C->>DB: last_status = ERROR, last_error
+        C->>DB: COMMIT
+    end
 ```
 
-Si algo falla antes del COMMIT, no cambia nada: ni datos ni version.
+El pedido HTTP va **antes** de abrir la transaccion para no retener una conexion a la base mientras espera a la catedra. El candado en memoria envuelve todo, pedido incluido: la sincronizacion que espera pide despues su propio snapshot, ya fresco. El `FOR UPDATE` sobre `sync_state` serializa tambien a dos instancias del servicio.
+
+Si algo falla antes del COMMIT, no cambia nada: ni datos ni version. El error se registra en otra transaccion (la de los datos ya se deshizo); si la base esta caida no hay donde registrarlo y `sync_state` conserva el estado anterior.
 
 ## Cuando se dispara
 
