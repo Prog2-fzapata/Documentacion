@@ -13,7 +13,7 @@ flowchart TD
     D -- no --> S
     D -- si --> E{"localVersion >= currentVersion?"}
     E -- si --> Z
-    E -- no --> F{"localVersion + 1 >= oldestAvailableVersion?"}
+    E -- no --> F{"localVersion >= oldestAvailableVersion?"}
     F -- no --> S["Sincronizacion COMPLETA: GET snapshot"]
     F -- si --> G["Sincronizacion INCREMENTAL"]
     G --> H{"Fallo o falta changes:N?"}
@@ -33,7 +33,7 @@ sequenceDiagram
 
     loop v = local+1 .. current
         C->>R: GET changes:v
-        C->>R: HGET de cada ID afectado (categorias, profesionales, horarios)
+        C->>R: HMGET de los ids afectados de cada tipo (categorias, profesionales, horarios)
         C->>DB: BEGIN
         C->>DB: upsert de entidades (incluye deshabilitadas)
         C->>DB: version local = v
