@@ -23,6 +23,29 @@ flowchart TD
     I --> Z
 ```
 
+## Estado actual (CAT-11): notificacion con snapshot completo
+
+Mientras no exista la sincronizacion incremental (CAT-10), el consumidor aplica el snapshot completo. La comparacion usa la version del **evento** (no la de Redis) y la deduplicacion es parte de la transaccion.
+
+```mermaid
+flowchart TD
+    A["Llega CatalogUpdated(newVersion, eventId)"] --> B{"JSON valido?"}
+    B -- no --> X["Descartar con log de error y commit de offset"]
+    B -- si --> C{"eventId ya procesado?"}
+    C -- si --> Z["Ignorar y commit de offset"]
+    C -- no --> D{"localVersion >= newVersion?"}
+    D -- si --> Z
+    D -- no --> E["GET snapshot (candado en memoria)"]
+    E --> F["BEGIN: datos + version local + eventId en processed_events: COMMIT"]
+    F --> Z
+    E -. falla .-> R["Reintentos con espera creciente"]
+    F -. falla .-> R
+    R -. se agotan .-> X
+    R -. ok .-> F
+```
+
+El offset se confirma siempre despues de resolver el mensaje (aplicado, ignorado o descartado), nunca antes del COMMIT.
+
 ## Incremental (version por version, en orden)
 
 ```mermaid
