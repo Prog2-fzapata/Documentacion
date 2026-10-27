@@ -53,6 +53,24 @@ flowchart TD
 
 El offset se confirma siempre despues de resolver el mensaje (aplicado, ignorado o descartado), nunca antes del COMMIT.
 
+## Verificacion de version (al arrancar y periodica)
+
+Kafka solo avisa y el aviso puede perderse. Por eso el servicio compara su version con la de Redis por su cuenta, sin evento: `CATEDRA_SYNC_INITIAL_DELAY` despues de arrancar (con la base vacia trae el snapshot) y despues cada `CATEDRA_SYNC_CHECK_INTERVAL`, contado desde el fin de la vuelta anterior. Aplica la misma decision de arriba, pero no hay `eventId` que consultar ni guardar.
+
+```mermaid
+flowchart TD
+    T["Reloj: arranque + espera inicial, luego cada intervalo"] --> M["Leer metadata de Redis (con el candado en memoria)"]
+    M -. Redis falla .-> S["Snapshot completo: una transaccion, sin eventId"]
+    M --> D{"localVersion vs currentVersion de Redis"}
+    D -- "igual" --> Z["Nada que aplicar"]
+    D -- "local = 0, mayor, o menor que oldestAvailable" --> S
+    D -- "otro caso" --> I["Incremental: una transaccion por version"]
+    I -. falla .-> S
+    I --> Z
+    S --> Z
+    S -. falla .-> E["Registrar error en el log y en sync_state; reintentar en la proxima vuelta"]
+```
+
 ## Incremental (version por version, en orden)
 
 ```mermaid
