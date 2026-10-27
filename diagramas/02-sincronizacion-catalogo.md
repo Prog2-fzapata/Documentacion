@@ -11,9 +11,11 @@ flowchart TD
     B -- no --> C["Leer metadata en Redis: currentVersion, oldestAvailableVersion"]
     C --> D{"Hay version local?"}
     D -- no --> S
-    D -- si --> E{"localVersion >= currentVersion?"}
+    D -- si --> E{"localVersion == currentVersion?"}
     E -- si --> Z
-    E -- no --> F{"localVersion >= oldestAvailableVersion?"}
+    E -- no --> E2{"localVersion > currentVersion? (la catedra retrocedio)"}
+    E2 -- si --> S
+    E2 -- no --> F{"localVersion >= oldestAvailableVersion?"}
     F -- no --> S["Sincronizacion COMPLETA: GET snapshot"]
     F -- si --> G["Sincronizacion INCREMENTAL"]
     G --> H{"Fallo o falta changes:N?"}
@@ -23,25 +25,30 @@ flowchart TD
     I --> Z
 ```
 
-## Estado actual (CAT-11): notificacion con snapshot completo
+## Estado actual (CAT-10 y CAT-11): como procesa el servicio un evento
 
-Mientras no exista la sincronizacion incremental (CAT-10), el consumidor aplica el snapshot completo. La comparacion usa la version del **evento** (no la de Redis) y la deduplicacion es parte de la transaccion.
+La decision usa la version **actual de Redis**, no la del evento: el evento solo dispara. Una version local mayor es un retroceso de la catedra (fuente de verdad) y se aplica el snapshot. Cualquier fallo de la incremental, o Redis caido, cae al snapshot. La deduplicacion es parte de la transaccion: en la incremental, el `eventId` se guarda con la **ultima** version.
 
 ```mermaid
 flowchart TD
     A["Llega CatalogUpdated(newVersion, eventId)"] --> B{"JSON valido?"}
     B -- no --> X["Descartar con log de error y commit de offset"]
-    B -- si --> C{"eventId ya procesado?"}
+    B -- si --> C{"eventId ya procesado o localVersion == newVersion del evento?"}
     C -- si --> Z["Ignorar y commit de offset"]
-    C -- no --> D{"localVersion >= newVersion?"}
-    D -- si --> Z
-    D -- no --> E["GET snapshot (candado en memoria)"]
-    E --> F["BEGIN: datos + version local + eventId en processed_events: COMMIT"]
-    F --> Z
-    E -. falla .-> R["Reintentos con espera creciente"]
-    F -. falla .-> R
+    C -- no --> M["Leer metadata de Redis"]
+    M -. Redis falla .-> S
+    M --> D{"localVersion vs currentVersion de Redis"}
+    D -- "igual" --> Z
+    D -- "local = 0 (base vacia)" --> S
+    D -- "local mayor (retroceso)" --> S
+    D -- "local menor que oldestAvailable" --> S
+    D -- "otro caso" --> I["Incremental: una transaccion por version (la ultima guarda el eventId)"]
+    I -. falta historial, dato invalido o la base rechaza .-> S["GET snapshot y una transaccion: datos + version + eventId"]
+    I --> Z
+    S --> Z
+    S -. falla .-> R["Reintentos con espera creciente; agotados: descartar con log"]
+    R -. ok .-> S
     R -. se agotan .-> X
-    R -. ok .-> F
 ```
 
 El offset se confirma siempre despues de resolver el mensaje (aplicado, ignorado o descartado), nunca antes del COMMIT.
