@@ -61,7 +61,12 @@ Actualiza los datos del usuario autenticado (como JHipster). El usuario sale del
 
 ### `GET /api/professional-categories`
 
-Parametro opcional: `enabled` (boolean). Respuesta: `[ { "id", "name", "description", "enabled" } ]`.
+| Parametro | Descripcion |
+| --- | --- |
+| `enabled` | `true`/`false`; sin valor devuelve todas |
+| `page`, `size`, `sort` | paginacion como en profesionales (`size` por defecto 20 y tope 100); `sort` solo por `id` o `name` (otro campo: `400 VALIDATION_ERROR`); orden por defecto `name` |
+
+Respuesta `200 OK` (con `X-Total-Count` y `Link`): `[ { "id", "name", "description", "enabled" } ]`.
 
 ### `GET /api/professionals`
 
@@ -95,7 +100,7 @@ Respuesta `200 OK` (con `X-Total-Count`):
 
 ### `GET /api/professionals/{id}`
 
-Mismo objeto que arriba, incluyendo `id` y `enabled` de cada horario. Es la **agenda vigente** que usa Turnos. Si el profesional o su categoria estan deshabilitados, se devuelve igual con `enabled=false` (la decision la toma quien consume). Errores: `404 PROFESSIONAL_NOT_FOUND`.
+Mismo objeto que arriba, pero `weeklySchedules` trae **todos** los horarios del profesional (tambien los deshabilitados), cada uno con `id` y `enabled`. Es la **agenda vigente** que usa Turnos. Si el profesional o su categoria estan deshabilitados, se devuelve igual con `enabled=false` (la decision la toma quien consume). Errores: `404 PROFESSIONAL_NOT_FOUND`.
 
 ## Sincronizacion
 
