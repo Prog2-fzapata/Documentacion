@@ -68,10 +68,10 @@ Parametro opcional: `enabled` (boolean). Respuesta: `[ { "id", "name", "descript
 | Parametro | Descripcion |
 | --- | --- |
 | `categoryId` | filtra por categoria |
-| `name` | texto parcial, sin distinguir mayusculas, sobre nombre y apellido |
+| `name` | texto parcial sobre nombre y apellido juntos, sin distinguir mayusculas ni tildes (hasta 100 caracteres) |
 | `enabled` | `true`/`false`; sin valor devuelve todos |
-| `available` | `true` = tiene al menos un horario semanal habilitado (ver A2) |
-| `page`, `size`, `sort` | paginacion; orden por defecto apellido, nombre |
+| `available` | `true` = tiene al menos un horario semanal habilitado; `false` = ninguno (A2 resuelta: es local) |
+| `page`, `size`, `sort` | paginacion; `size` por defecto 20 y tope 100 (un valor mayor se reduce); `sort` solo por `id`, `firstName` o `lastName` (otro campo: `400 VALIDATION_ERROR`); orden por defecto apellido, nombre |
 
 Respuesta `200 OK` (con `X-Total-Count`):
 
