@@ -122,6 +122,6 @@ flowchart LR
 ## Notas de diseño
 
 - Los eventos de la catedra que llegan por Kafka son **casos de uso como cualquier otro**; el listener solo los traduce a un objeto de dominio y llama al puerto. Asi se pueden probar sin Kafka.
-- Los casos de uso de eventos aplican idempotencia (`processed_event`) y las transiciones de la maquina de estados ([04](04-maquina-estados-reserva.md)).
+- Los casos de uso de eventos aplican idempotencia (`processed_events`) y las transiciones de la maquina de estados ([04](04-maquina-estados-reserva.md)).
 - `HandleProcessClosedUseCase` agrupa `AppointmentProcessExpired` y `AppointmentProcessInvalid`: ambos cierran el proceso con distinto estado final.
 - Los puertos `out` (repositorios, cliente de la catedra, Redis, publisher Kafka, cliente de catalogo) se definen al implementar cada slice.

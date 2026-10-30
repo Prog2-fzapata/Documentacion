@@ -81,18 +81,18 @@ Notas:
 - `SYNC_STATE.local_version` solo se actualiza en la misma transaccion que aplica los datos.
 - `USERS` y `AUTHORITIES` replican el modelo de usuario de JHipster (requisito de compatibilidad del enunciado).
 - `SYNC_STATE` cubre "informar estado y errores de sincronizacion" (4.1). La migracion crea su unica fila (`id = 1`, `local_version = 0`).
-- Los nombres de las tablas van en plural (convencion de la catedra); `SYNC_STATE` queda en singular por ser una sola fila. Las tablas de turnos se nombran igual al implementar TUR-04.
+- Los nombres de las tablas van en plural (convencion de la catedra); `SYNC_STATE` queda en singular por ser una sola fila. Las tablas de turnos se nombraron igual al implementar TUR-04 (`reservation_processes`, `outbox_events`, `processed_events`).
 
 ## Servicio Turnos (`turnos_db`)
 
 ```mermaid
 erDiagram
-    RESERVATION_PROCESS ||--o{ OUTBOX : genera
+    RESERVATION_PROCESSES ||--o{ OUTBOX_EVENTS : genera
 
-    RESERVATION_PROCESS {
-        bigint id PK
-        string reservation_process_id UK "id de catedra"
-        string hold_id "id de catedra"
+    RESERVATION_PROCESSES {
+        bigint id PK "generado por la base"
+        string reservation_process_id UK "id de catedra, NULL hasta el hold"
+        string hold_id "id de catedra, NULL hasta el hold"
         string user_id "id del usuario final, sin FK"
         bigint professional_id "referencia a catalogo, sin FK"
         string professional_first_name "dato historico"
@@ -104,7 +104,7 @@ erDiagram
         timestamp expires_at
         string patient_first_name
         string patient_last_name
-        string patient_phone
+        string patient_phone "opcional"
         string request_event_id "para responder el telefono"
         bigint reservation_id "id de catedra al confirmar"
         string failure_reason
@@ -114,10 +114,10 @@ erDiagram
         timestamp updated_at
         bigint version "bloqueo optimista"
     }
-    OUTBOX {
+    OUTBOX_EVENTS {
         bigint id PK
         string event_id UK
-        string reservation_process_id FK
+        string reservation_process_id FK "al id de catedra"
         string topic
         string message_key
         text payload
@@ -126,21 +126,23 @@ erDiagram
         timestamp created_at
         timestamp sent_at
     }
-    PROCESSED_EVENT {
+    PROCESSED_EVENTS {
         string event_id PK
         string event_type
         timestamp processed_at
     }
 ```
 
-Notas:
+Implementado en la migracion `V1` de turnos (TUR-04, ver D78). Notas:
 
+- `reservation_process_id` y `hold_id` aceptan `NULL`: el proceso local se crea en `HOLD_REQUESTED` antes de llamar a la catedra. El `UNIQUE` evita duplicados igual (PostgreSQL permite varios `NULL`).
 - `user_id` identifica al dueño de la reserva. Viene del JWT (no del cliente) y se envia a la catedra como `externalPatientId`. Toda consulta y cancelacion filtra por este campo.
 - `professional_id` y los nombres son **datos descriptivos historicos**: sirven para mostrar la reserva, no como catalogo vigente (el enunciado lo permite y lo restringe).
 - `status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED` (ver [04](04-maquina-estados-reserva.md)).
 - `version` evita que dos eventos concurrentes (REST y Kafka) pisen el mismo proceso.
 - `reservation_process_id` es unico: garantiza que no haya reservas duplicadas para el mismo proceso.
-- `OUTBOX` y `PROCESSED_EVENT` son tecnicas, no del dominio.
+- `OUTBOX_EVENTS` y `PROCESSED_EVENTS` son tecnicas, no del dominio.
+- `status` tiene un `CHECK` con los nueve estados: un estado nuevo exige una migracion.
 
 ## Fronteras de propiedad
 
@@ -151,7 +153,7 @@ flowchart LR
         U["USERS"]
     end
     subgraph TUR["turnos_db"]
-        R["RESERVATION_PROCESS"]
+        R["RESERVATION_PROCESSES"]
     end
     R -. "professional_id (solo valor, sin FK)" .-> P
     R -. "user_id (viene del JWT, sin FK)" .-> U
@@ -162,5 +164,5 @@ Las lineas punteadas son referencias **por valor**. El servicio de turnos nunca 
 ## Decisiones
 
 - **Identificador del usuario:** el `id` numerico de `USERS`, incluido como claim en el JWT y enviado como texto en `externalPatientId`. Es inmutable, a diferencia de cualquier dato editable, y la catedra asocia las reservas a ese valor.
-- **Telefono:** se conserva en `RESERVATION_PROCESS.patient_phone` (la catedra tambien lo devuelve en el listado).
-- **Indices:** por `user_id`, por `status` + `expires_at` (job de recuperacion) y por `status` en `OUTBOX`.
+- **Telefono:** se conserva en `RESERVATION_PROCESSES.patient_phone` (la catedra tambien lo devuelve en el listado).
+- **Indices:** por `user_id`, por `status` + `expires_at` (job de recuperacion), por la clave foranea del outbox y uno **parcial** sobre `created_at` solo para las filas `PENDING` de `OUTBOX_EVENTS` (es lo unico que lee el relay).

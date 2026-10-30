@@ -70,7 +70,7 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | TUR-01 | Proyecto Spring Boot base y estructura hexagonal | M1 | Igual que CAT-01 contra `turnos_db` |
 | TUR-02 | Dockerfile y configuracion del servicio | M1 | Igual que CAT-02 |
 | TUR-03 | Seguridad: validacion del JWT emitido por catalogo | M2 | Valida firma, vigencia y autoridades; 401/403; `uid` solo desde el JWT; A3 resuelto; tests |
-| TUR-04 | Modelo de datos y migraciones | M2 | `reservation_process`, `outbox`, `processed_event` e indices segun [05](diagramas/05-modelo-de-datos.md) |
+| TUR-04 | Modelo de datos y migraciones | M2 | `reservation_processes`, `outbox_events`, `processed_events` e indices segun [05](diagramas/05-modelo-de-datos.md) |
 | TUR-05 | Cliente de catalogo con propagacion del JWT | M4 | Puerto `out` + adapter; timeout y reintentos limitados; 5xx o timeout = `CATALOG_UNAVAILABLE` |
 | TUR-06 | Cliente de la catedra: ocupaciones, holds, confirm, listado y cancelacion | M4 | Un adapter con JWT tecnico por entorno; traduccion de errores del anexo §13; timeouts y reintentos limitados |
 | TUR-07 | Disponibilidad | M4 | `GET /api/availability`: slots de la agenda menos ocupaciones, ordenados, sin horarios pasados; tests |
