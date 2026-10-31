@@ -5,6 +5,7 @@ stateDiagram-v2
     [*] --> HOLD_REQUESTED: usuario elige horario
     HOLD_REQUESTED --> HELD: 201 hold creado
     HOLD_REQUESTED --> FAILED: 409 / 400 / 404
+    HOLD_REQUESTED --> FAILED: resultado desconocido (timeout / 5xx), el hold huerfano vence solo
 
     HELD --> WAITING_PHONE: 202 confirm
     HELD --> EXPIRED: HOLD_EXPIRED / expiresAt vencido
@@ -32,6 +33,7 @@ stateDiagram-v2
 
 ## Reglas
 
+- **Respuesta perdida del hold (D80):** no hay idempotencia ni forma de recuperar los ids de un hold. El proceso en `HOLD_REQUESTED` pasa a `FAILED`; antes de crear otro hold se consultan las ocupaciones (si aparece `HELD`, esperar su `expiresAt` sin asumir que es nuestro; el TTL es de 10 minutos desde la creacion en el servidor). Un `409` nunca se toma como "es mi hold".
 - **Estados finales:** `EXPIRED`, `FAILED`, `CANCELLED`. Un evento tardio o duplicado no los reabre.
 - `CONFIRMED` solo puede pasar a `CANCELLED`.
 - El relay del outbox al confirmar el ack solo marca la fila como `SENT`; el estado de la reserva pasa a `PHONE_SUBMITTED` unicamente si sigue en `PHONE_QUEUED`. Si `AppointmentConfirmed` llego antes, el estado se mantiene.

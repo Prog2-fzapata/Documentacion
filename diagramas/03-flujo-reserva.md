@@ -62,6 +62,8 @@ sequenceDiagram
     end
 ```
 
+**Si se pierde la respuesta del `POST` del hold** (timeout o 5xx) no se repite el POST: la catedra no tiene idempotencia ni una consulta para recuperar los ids (D80). El proceso pasa a `FAILED` y, antes de crear otro hold, se consultan las ocupaciones del profesional y la fecha: `HELD` se espera hasta su `expiresAt` (sin asumir que es nuestro), `CONFIRMED` no esta disponible y libre permite un hold nuevo, contemplando un `409` por concurrencia.
+
 ## Resultados finales posibles (Kafka, topic acciones)
 
 ```mermaid
