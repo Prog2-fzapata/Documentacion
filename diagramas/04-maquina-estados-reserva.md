@@ -18,6 +18,8 @@ stateDiagram-v2
     PHONE_QUEUED --> PHONE_SUBMITTED: relay publica en Kafka y marca SENT
     PHONE_QUEUED --> EXPIRED: vence antes de poder enviarse
     PHONE_QUEUED --> FAILED: AppointmentProcessInvalid
+    PHONE_QUEUED --> CONFIRMED: AppointmentConfirmed llega antes del ack del relay
+    PHONE_QUEUED --> WAITING_PHONE: AdditionalInformationRejected llega antes del ack del relay
 
     PHONE_SUBMITTED --> CONFIRMED: AppointmentConfirmed
     PHONE_SUBMITTED --> WAITING_PHONE: AdditionalInformationRejected
@@ -37,7 +39,9 @@ stateDiagram-v2
 - **Estados finales:** `EXPIRED`, `FAILED`, `CANCELLED`. Un evento tardio o duplicado no los reabre.
 - `CONFIRMED` solo puede pasar a `CANCELLED`.
 - El relay del outbox al confirmar el ack solo marca la fila como `SENT`; el estado de la reserva pasa a `PHONE_SUBMITTED` unicamente si sigue en `PHONE_QUEUED`. Si `AppointmentConfirmed` llego antes, el estado se mantiene.
-- Una transicion invalida para el estado actual se ignora y se registra (no se rompe ni se retrocede).
+- **Resultado de pedir una transicion (TUR-09, D84):** `APPLIED` (el estado cambio), `ALREADY_IN_STATE` (ya estaba en el destino: no cambia nada, y hace idempotente repetir un pedido, por ejemplo cancelar dos veces) o `REJECTED` (el diagrama no la permite desde el estado actual: se ignora y se registra, sin excepcion; cada llamador decide que responder). Se mira primero si ya estaba en el destino y despues la tabla.
+- **Bloqueo optimista:** cada proceso lleva una `version`. Si dos operaciones (REST y Kafka, o dos eventos) lo modifican a la vez, la segunda recibe un conflicto, relee el proceso y decide de nuevo sobre el estado vigente, hasta `RESERVATION_CONFLICT_MAX_ATTEMPTS` intentos (3 por defecto). Es seguro repetir porque los estados solo avanzan. Agotados los intentos, el llamador recibe el conflicto.
+- **Desde `PHONE_QUEUED`** tambien se aceptan `CONFIRMED` y `WAITING_PHONE`: la respuesta de la catedra puede llegar antes de que el relay anote el ack. El relay, en cambio, solo pasa a `PHONE_SUBMITTED` desde `PHONE_QUEUED`; si el proceso ya avanzo, ese paso es `REJECTED` y no retrocede nada.
 - REST y Kafka pueden contar la misma cosa en momentos distintos: se avanza solo hacia adelante y gana el estado mas avanzado. `AppointmentConfirmed` puede llegar antes de que REST lo refleje.
 - Cada proceso guarda: usuario dueño, `reservationProcessId`, `holdId`, `requestEventId`, `expiresAt`, datos del slot y datos descriptivos historicos del profesional.
 
