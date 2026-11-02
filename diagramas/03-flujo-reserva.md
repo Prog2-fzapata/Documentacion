@@ -62,6 +62,8 @@ sequenceDiagram
     end
 ```
 
+**Si el hold vence antes de confirmarse** (`HOLD_EXPIRED` o `HOLD_NOT_FOUND` al confirmar) el hold ya no existe y nada quedó bloqueado: el intento se cierra (`EXPIRED`/`FAILED`) y se pide otro hold en un proceso nuevo, hasta `RESERVATION_HOLD_MAX_ATTEMPTS` intentos; si lo tomaron en el medio, la cátedra responde `409`. **Si se pierde la respuesta de la confirmación** el hold existe y pudo haberse confirmado: el proceso queda en `HELD` y se responde `503`, para que el vencimiento o la reconciliación lo resuelvan.
+
 **Si se pierde la respuesta del `POST` del hold** (timeout o 5xx) no se repite el POST: la catedra no tiene idempotencia ni una consulta para recuperar los ids (D80). El proceso pasa a `FAILED` y, antes de crear otro hold, se consultan las ocupaciones del profesional y la fecha: `HELD` se espera hasta su `expiresAt` (sin asumir que es nuestro), `CONFIRMED` no esta disponible y libre permite un hold nuevo, contemplando un `409` por concurrencia.
 
 ## Resultados finales posibles (Kafka, topic acciones)

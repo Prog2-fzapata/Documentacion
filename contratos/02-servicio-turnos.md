@@ -60,7 +60,7 @@ Errores: `400 INVALID_DATE_RANGE` (rango invertido o mayor al maximo), `404 PROF
 
 El backend valida con Catalogo (profesional habilitado, horario dentro de su agenda), pide el hold, lo confirma inicialmente y devuelve el proceso. El identificador sale del JWT. Nombre y apellido del paciente se piden a `GET /api/account` de Catalogo con el mismo JWT, **antes** del hold; si faltan, responde `PATIENT_NAME_REQUIRED` y no se crea nada.
 
-Respuesta `201 Created`: `Reservation` normalmente en `WAITING_PHONE` (si la catedra aun no publico el pedido, el telefono se solicita igual: el SSE avisa cuando se puede enviar; ver nota).
+Si se pierde la respuesta del hold o el hold vence antes de confirmarse, el backend reintenta con un hold nuevo hasta `RESERVATION_HOLD_MAX_ATTEMPTS` intentos (D85). Respuesta `201 Created`: `Reservation` normalmente en `WAITING_PHONE` (si la catedra aun no publico el pedido, el telefono se solicita igual: el SSE avisa cuando se puede enviar; ver nota).
 
 Errores:
 
@@ -68,10 +68,11 @@ Errores:
 | --- | --- | --- |
 | 400 | `VALIDATION_ERROR` | campos faltantes o formato invalido |
 | 400 | `PATIENT_NAME_REQUIRED` | la cuenta no tiene nombre o apellido cargado (o tiene menos de 2 caracteres); la app pide los datos y reintenta |
-| 400 | `INVALID_SLOT` | horario fuera de la agenda |
+| 400 | `INVALID_SLOT` | horario fuera de la agenda, o que ya paso |
 | 400 | `PROFESSIONAL_DISABLED` | profesional deshabilitado |
 | 404 | `PROFESSIONAL_NOT_FOUND` | profesional inexistente |
-| 409 | `SLOT_UNAVAILABLE` | la catedra respondio `SLOT_ALREADY_HELD` o `SLOT_ALREADY_RESERVED` |
+| 409 | `SLOT_UNAVAILABLE` | la catedra respondio `SLOT_ALREADY_HELD` o `SLOT_ALREADY_RESERVED`, o tras perder la respuesta del hold las ocupaciones muestran el horario ocupado |
+| 409 | `RESERVATION_EXPIRED` | el hold vencio antes de confirmarse y no se consiguio otro dentro de los intentos |
 | 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` | dependencia caida |
 
 ### `POST /api/reservations/{id}/phone`
