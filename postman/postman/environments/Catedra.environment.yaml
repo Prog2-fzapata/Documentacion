@@ -15,4 +15,24 @@ values:
   - key: email
     value: ''
   - key: jwt
+    secret: true
+  - key: professionalId
+    value: ''
+  - key: from
+    value: ''
+  - key: to
+    value: ''
+  - key: date
+    value: ''
+  - key: startTime
+    value: '09:00'
+  - key: externalPatientId
+    value: prueba-postman
+  - key: patientFirstName
+    value: Juan
+  - key: patientLastName
+    value: Perez
+  - key: holdId
+    value: ''
+  - key: reservationProcessId
     value: ''

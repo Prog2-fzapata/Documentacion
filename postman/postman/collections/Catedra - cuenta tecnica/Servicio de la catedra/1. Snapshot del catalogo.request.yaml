@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{baseUrl}}/api/synchronization/snapshot"
+method: GET
+examples: .resources/1. Snapshot del catalogo.resources/examples
+description: |-
+  Devuelve el catálogo completo de la cátedra: categorías, profesionales y horarios semanales, habilitados y deshabilitados (contrato, sección 7).
+
+  Es de solo lectura. El script elige un profesional con agenda y guarda su id en `professionalId`; la agenda aparece en la consola de Postman.
+
+  Respuestas: `200` con `snapshotVersion`, `professionalCategories`, `professionals` y `weeklySchedules`.
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+order: 1000
+scripts:
+  - type: afterResponse
+    code: |-
+      // Elige un profesional habilitado con agenda para no tener que buscarlo a mano.
+      if (pm.response.code === 200) {
+        const s = pm.response.json();
+        const conAgenda = new Set(s.weeklySchedules.filter(w => w.enabled).map(w => w.professionalId));
+        const p = s.professionals.find(p => p.enabled && conAgenda.has(p.id));
+        if (p && !pm.environment.get('professionalId')) {
+          pm.environment.set('professionalId', String(p.id));
+        }
+        if (p) {
+          console.log('Profesional ' + p.id + ' (' + p.firstName + ' ' + p.lastName + '), agenda:',
+            JSON.stringify(s.weeklySchedules.filter(w => w.enabled && w.professionalId === p.id)
+              .map(w => w.dayOfWeek + ' ' + w.startTime + '-' + w.endTime + ' cada ' + w.slotDurationMinutes + ' min')));
+        }
+      }
+    language: text/javascript

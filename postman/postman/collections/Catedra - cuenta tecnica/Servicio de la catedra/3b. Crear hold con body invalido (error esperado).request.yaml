@@ -1,0 +1,20 @@
+$kind: http-request
+name: '3b. Crear hold con body incompleto (error esperado 400 VALIDATION_ERROR)'
+url: '{{baseUrl}}/api/appointment-holds'
+method: POST
+description: |-
+  Envía un hold sin los campos obligatorios, para ver cómo responde la cátedra a un body inválido.
+
+  Respuesta esperada: `400` con `code: VALIDATION_ERROR` y un arreglo `fieldErrors` que dice qué campo falla (`objectName`, `field`, `message`). No crea nada.
+order: 3500
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "date": "2026-12-01"
+    }

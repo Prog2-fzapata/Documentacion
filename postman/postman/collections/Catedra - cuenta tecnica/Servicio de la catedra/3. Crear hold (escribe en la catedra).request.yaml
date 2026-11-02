@@ -1,0 +1,35 @@
+$kind: http-request
+name: '3. Crear hold (ESCRIBE: bloquea el slot ~10 minutos)'
+url: '{{baseUrl}}/api/appointment-holds'
+method: POST
+description: |-
+  **Escribe en la cátedra.** Bloquea un slot de forma temporal (hold) para un paciente (sección 9). El hold vence solo a los ~10 minutos; la vigencia real es `expiresAt`.
+
+  Body, todos obligatorios: `professionalId`, `date`, `startTime` (`HH:mm`) y `externalPatientId` (hasta 100 caracteres). El slot tiene que existir en la agenda habilitada del profesional.
+
+  Respuestas: `201` con `holdId`, `reservationProcessId`, `status: HELD` y `expiresAt` (el script guarda los dos ids); `404 PROFESSIONAL_NOT_FOUND`; `400 PROFESSIONAL_DISABLED`, `INVALID_SLOT` o `VALIDATION_ERROR`; `409 SLOT_ALREADY_HELD` o `SLOT_ALREADY_RESERVED`.
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "professionalId": {{professionalId}},
+      "date": "{{date}}",
+      "startTime": "{{startTime}}",
+      "externalPatientId": "{{externalPatientId}}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // Guarda los ids para que "Confirmar" y "Cancelar" los usen solos.
+      if (pm.response.code === 201) {
+        const h = pm.response.json();
+        pm.environment.set('holdId', h.holdId);
+        pm.environment.set('reservationProcessId', h.reservationProcessId);
+      }

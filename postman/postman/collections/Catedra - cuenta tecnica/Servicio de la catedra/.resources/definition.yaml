@@ -1,0 +1,4 @@
+$kind: collection
+name: Servicio de la catedra
+description: 'Operaciones REST de la catedra (INTEGRATION_REFERENCE-v2.md, secciones 7 a 12). Cada request envia el JWT tecnico desde la variable jwt del entorno: ejecutar antes "2. Autenticar y obtener configuracion". Las carpetas 3 a 6 ESCRIBEN en la catedra real.'
+order: 4000

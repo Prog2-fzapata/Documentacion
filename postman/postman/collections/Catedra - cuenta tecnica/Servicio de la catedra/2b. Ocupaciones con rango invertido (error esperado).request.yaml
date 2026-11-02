@@ -1,0 +1,17 @@
+$kind: http-request
+name: 2b. Ocupaciones con rango invertido (error esperado 400 INVALID_DATE_RANGE)
+url: "{{baseUrl}}/api/appointment-occupancies?professionalId={{professionalId}}&from=2026-12-31&to=2026-01-01"
+method: GET
+description: |-
+  Pide ocupaciones con `from` posterior a `to`, para ver cómo responde la cátedra a un error.
+
+  Respuesta esperada: `400` con `application/problem+json` y `code: INVALID_DATE_RANGE`. Los clientes deben decidir por `status` y `code`, nunca por el texto de `detail`. Solo lectura.
+examples: .resources/2b. Ocupaciones con rango invertido (error esperado).resources/examples
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+order: 2500
+queryParams:
+  professionalId: "{{professionalId}}"
+  from: 2026-12-31
+  to: 2026-01-01

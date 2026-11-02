@@ -1,0 +1,36 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/appointment-occupancies?professionalId={{professionalId}}&from={{from}}&to={{to}}"
+  method: GET
+  queryParams:
+    professionalId: "{{professionalId}}"
+    from: "{{from}}"
+    to: "{{to}}"
+response:
+  statusCode: 200
+  statusText: ""
+  headers:
+    x-content-type-options: nosniff
+    x-xss-protection: "0"
+    cache-control: no-cache, no-store, max-age=0, must-revalidate
+    pragma: no-cache
+    expires: "0"
+    x-frame-options: SAMEORIGIN
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+    referrer-policy: strict-origin-when-cross-origin
+    permissions-policy: camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()
+    content-type: application/json
+    content-length: "77"
+    date: Mon, 02 Nov 2026 13:18:11 GMT
+    keep-alive: timeout=60
+    connection: keep-alive
+  body:
+    type: json
+    content: |-
+      {
+        "from": "2026-11-02",
+        "occupancies": [],
+        "professionalId": 201,
+        "to": "2026-11-16"
+      }
+order: 1000

@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/api/appointments?externalPatientId={{externalPatientId}}&page=0&size=20"
+method: GET
+description: |-
+  Lista las reservas de **toda la cuenta técnica**, paginadas (sección 11). Solo lectura.
+
+  Filtros opcionales y combinables: `status` (`PHONE_PENDING`, `CONFIRMED`, `CANCELLED`, `FAILED`), `from`, `to`, `externalPatientId` (coincidencia exacta), `page`, `size`, `sort`. Por defecto ordena por fecha y hora de turno, de la más reciente a la más antigua.
+
+  Respuestas: `200` con un arreglo de reservas y las cabeceras `X-Total-Count` y `Link`. Ojo: devuelve las reservas de todos los usuarios del proyecto; el backend es quien debe filtrar por usuario.
+examples: .resources/5. Listar reservas.resources/examples
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+order: 5000
+queryParams:
+  - key: externalPatientId
+    value: "{{externalPatientId}}"
+    description: Filtro opcional; desactivarlo para ver todas las reservas de la cuenta tecnica.
+  - key: status
+    value: ""
+    disabled: true
+    description: PHONE_PENDING, CONFIRMED, CANCELLED o FAILED.
+  - key: page
+    value: "0"
+  - key: size
+    value: "20"

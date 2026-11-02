@@ -1,0 +1,47 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/appointments?page=0&size=20"
+  method: GET
+  queryParams:
+    - key: externalPatientId
+      value: "{{externalPatientId}}"
+      disabled: true
+      description: Filtro opcional; desactivarlo para ver todas las reservas de la cuenta tecnica.
+    - key: status
+      value: ""
+      disabled: true
+      description: PHONE_PENDING, CONFIRMED, CANCELLED o FAILED.
+    - key: page
+      value: "0"
+      disabled: false
+      description: ""
+    - key: size
+      value: "20"
+      disabled: false
+      description: ""
+response:
+  statusCode: 200
+  statusText: ""
+  headers:
+    x-total-count: "0"
+    link: <http://172.17.201.1:8090/api/appointments?page=-1&size=20>; rel="last",<http://172.17.201.1:8090/api/appointments?page=0&size=20>; rel="first"
+    x-content-type-options: nosniff
+    x-xss-protection: "0"
+    cache-control: no-cache, no-store, max-age=0, must-revalidate
+    pragma: no-cache
+    expires: "0"
+    x-frame-options: SAMEORIGIN
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+    referrer-policy: strict-origin-when-cross-origin
+    permissions-policy: camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()
+    vary: accept-encoding
+    content-encoding: gzip
+    content-type: application/json
+    transfer-encoding: chunked
+    date: Mon, 02 Nov 2026 13:23:12 GMT
+    keep-alive: timeout=60
+    connection: keep-alive
+  body:
+    type: json
+    content: "[]"
+order: 1000

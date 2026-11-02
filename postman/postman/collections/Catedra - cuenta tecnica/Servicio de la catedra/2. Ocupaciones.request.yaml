@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/api/appointment-occupancies?professionalId={{professionalId}}&from={{from}}&to={{to}}"
+method: GET
+description: |-
+  Lista los slots **no disponibles** de un profesional entre `from` y `to`, ambos inclusivos (sección 8). Junta reservas `CONFIRMED` y holds `HELD` (estos traen `expiresAt`). Si un slot está en ambos, gana `CONFIRMED`.
+
+  No es la disponibilidad: es lo que hay que restarle a la agenda. Una lista vacía significa que no hay nada ocupado.
+
+  Parámetros obligatorios: `professionalId`, `from` y `to` (`yyyy-MM-dd`, `to` no anterior a `from`). Si `from` y `to` están vacíos en el entorno, se usan hoy y hoy + 7 días.
+
+  Respuestas: `200`; `400 INVALID_DATE_RANGE`. Solo lectura.
+examples: .resources/2. Ocupaciones.resources/examples
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+order: 2000
+queryParams:
+  professionalId: "{{professionalId}}"
+  from: "{{from}}"
+  to: "{{to}}"
+scripts:
+  - type: beforeRequest
+    code: |-
+      // Por defecto: de hoy a dentro de 7 dias (si no se cargaron en el entorno).
+      const dia = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+      if (!pm.environment.get('from')) pm.environment.set('from', dia(0));
+      if (!pm.environment.get('to')) pm.environment.set('to', dia(7));
+    language: text/javascript

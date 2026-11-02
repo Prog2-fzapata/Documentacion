@@ -18,4 +18,5 @@ scripts:
         pm.environment.set('jwt', pm.response.json().id_token);
       }
     language: text/javascript
+examples: .resources/2. Autenticar y obtener configuracion.resources/examples
 order: 2000

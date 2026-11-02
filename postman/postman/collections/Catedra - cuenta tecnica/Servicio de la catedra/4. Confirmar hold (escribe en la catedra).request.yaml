@@ -1,0 +1,24 @@
+$kind: http-request
+name: '4. Confirmar hold (ESCRIBE: crea reserva PHONE_PENDING y publica en Kafka)'
+url: '{{baseUrl}}/api/appointment-holds/{{holdId}}/confirm'
+method: POST
+description: |-
+  **Escribe en la cátedra.** Confirma inicialmente un hold: la cátedra crea una reserva `PHONE_PENDING` y publica `AdditionalInformationRequested` en Kafka (sección 10). El proceso debe completarse antes de `expiresAt`; hasta que llegue el teléfono por Kafka no pasa a `CONFIRMED`.
+
+  Usa `{{holdId}}` (lo guarda **3. Crear hold**). Body, todos obligatorios: `externalPatientId` (igual al del hold), `patientFirstName` y `patientLastName` (2 a 100 caracteres).
+
+  Respuestas: `202` con `reservationProcessId`, `status: WAITING_FOR_PHONE` y `expiresAt`; `404 HOLD_NOT_FOUND` o `HOLD_EXPIRED`; `403 HOLD_OWNER_MISMATCH`; `400 EXTERNAL_PATIENT_MISMATCH`; `409 RESERVATION_PROCESS_ALREADY_CONFIRMED`.
+order: 4000
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "externalPatientId": "{{externalPatientId}}",
+      "patientFirstName": "{{patientFirstName}}",
+      "patientLastName": "{{patientLastName}}"
+    }

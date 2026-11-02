@@ -1,0 +1,802 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/synchronization/snapshot"
+  method: GET
+response:
+  statusCode: 200
+  statusText: ""
+  headers:
+    x-content-type-options: nosniff
+    x-xss-protection: "0"
+    cache-control: no-cache, no-store, max-age=0, must-revalidate
+    pragma: no-cache
+    expires: "0"
+    x-frame-options: SAMEORIGIN
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+    referrer-policy: strict-origin-when-cross-origin
+    permissions-policy: camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()
+    vary: accept-encoding
+    content-encoding: gzip
+    content-type: application/json
+    transfer-encoding: chunked
+    date: Mon, 02 Nov 2026 13:15:01 GMT
+    keep-alive: timeout=60
+    connection: keep-alive
+  body:
+    type: json
+    content: |-
+      {
+        "generatedAt": "2026-11-02T13:15:01.903318257Z",
+        "professionalCategories": [
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion cardiovascular para el escenario academico",
+            "enabled": true,
+            "id": 101,
+            "name": "Cardiologia",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion pediatrica para el escenario academico",
+            "enabled": true,
+            "id": 102,
+            "name": "Pediatria",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion clinica general para el escenario academico",
+            "enabled": true,
+            "id": 103,
+            "name": "Clinica medica",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion dermatologica para el escenario academico",
+            "enabled": true,
+            "id": 104,
+            "name": "Dermatologia",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion traumatologica para el escenario academico",
+            "enabled": true,
+            "id": 105,
+            "name": "Traumatologia",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion oftalmologica para el escenario academico",
+            "enabled": true,
+            "id": 106,
+            "name": "Oftalmologia",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion ginecologica para el escenario academico",
+            "enabled": true,
+            "id": 107,
+            "name": "Ginecologia",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "description": "Atencion psicologica y psiquiatrica para el escenario academico",
+            "enabled": true,
+            "id": 108,
+            "name": "Salud mental",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          }
+        ],
+        "professionals": [
+          {
+            "categoryId": 101,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Ana",
+            "id": 201,
+            "lastName": "Torres",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 101,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Martin",
+            "id": 202,
+            "lastName": "Rivas",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 101,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Elena",
+            "id": 203,
+            "lastName": "Godoy",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 102,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Laura",
+            "id": 204,
+            "lastName": "Medina",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 102,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Nicolas",
+            "id": 205,
+            "lastName": "Vega",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 102,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": false,
+            "firstName": "Carolina",
+            "id": 206,
+            "lastName": "Molina",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 103,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Diego",
+            "id": 207,
+            "lastName": "Alvarez",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 103,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Sofia",
+            "id": 208,
+            "lastName": "Herrera",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 103,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Andres",
+            "id": 209,
+            "lastName": "Quiroga",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 104,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Valentina",
+            "id": 210,
+            "lastName": "Costa",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 104,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Luciana",
+            "id": 211,
+            "lastName": "Paredes",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 105,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Pablo",
+            "id": 212,
+            "lastName": "Suarez",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 105,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Federico",
+            "id": 213,
+            "lastName": "Campos",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 105,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": false,
+            "firstName": "Mariana",
+            "id": 214,
+            "lastName": "Luna",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 106,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Gabriel",
+            "id": 215,
+            "lastName": "Sosa",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 106,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Paula",
+            "id": 216,
+            "lastName": "Navarro",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 107,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Julieta",
+            "id": 217,
+            "lastName": "Castro",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 107,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Romina",
+            "id": 218,
+            "lastName": "Acosta",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 107,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Camila",
+            "id": 219,
+            "lastName": "Farias",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 108,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Sebastian",
+            "id": 220,
+            "lastName": "Leiva",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 108,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Florencia",
+            "id": 221,
+            "lastName": "Reyes",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 108,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": false,
+            "firstName": "Hector",
+            "id": 222,
+            "lastName": "Mansilla",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 103,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Rocio",
+            "id": 223,
+            "lastName": "Benitez",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "categoryId": 105,
+            "createdAt": "2026-09-01T03:00:00Z",
+            "enabled": true,
+            "firstName": "Emiliano",
+            "id": 224,
+            "lastName": "Ortiz",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          }
+        ],
+        "snapshotVersion": 1,
+        "weeklySchedules": [
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 301,
+            "professionalId": 201,
+            "slotDurationMinutes": 30,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 302,
+            "professionalId": 201,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "14:30:00",
+            "id": 303,
+            "professionalId": 202,
+            "slotDurationMinutes": 30,
+            "startTime": "11:30:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 304,
+            "professionalId": 202,
+            "slotDurationMinutes": 30,
+            "startTime": "18:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 305,
+            "professionalId": 203,
+            "slotDurationMinutes": 20,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 306,
+            "professionalId": 204,
+            "slotDurationMinutes": 20,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "16:00:00",
+            "id": 307,
+            "professionalId": 204,
+            "slotDurationMinutes": 20,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 308,
+            "professionalId": 205,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 309,
+            "professionalId": 205,
+            "slotDurationMinutes": 30,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": false,
+            "endTime": "15:00:00",
+            "id": 310,
+            "professionalId": 206,
+            "slotDurationMinutes": 20,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 311,
+            "professionalId": 207,
+            "slotDurationMinutes": 30,
+            "startTime": "18:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 312,
+            "professionalId": 207,
+            "slotDurationMinutes": 30,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 313,
+            "professionalId": 208,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 314,
+            "professionalId": 208,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 315,
+            "professionalId": 209,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "19:00:00",
+            "id": 316,
+            "professionalId": 209,
+            "slotDurationMinutes": 30,
+            "startTime": "16:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 317,
+            "professionalId": 210,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 318,
+            "professionalId": 210,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 319,
+            "professionalId": 211,
+            "slotDurationMinutes": 30,
+            "startTime": "18:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "16:00:00",
+            "id": 320,
+            "professionalId": 211,
+            "slotDurationMinutes": 30,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 321,
+            "professionalId": 212,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 322,
+            "professionalId": 212,
+            "slotDurationMinutes": 30,
+            "startTime": "18:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 323,
+            "professionalId": 213,
+            "slotDurationMinutes": 30,
+            "startTime": "16:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 324,
+            "professionalId": 213,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": false,
+            "endTime": "15:00:00",
+            "id": 325,
+            "professionalId": 214,
+            "slotDurationMinutes": 30,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 326,
+            "professionalId": 215,
+            "slotDurationMinutes": 20,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 327,
+            "professionalId": 215,
+            "slotDurationMinutes": 20,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 328,
+            "professionalId": 216,
+            "slotDurationMinutes": 20,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 329,
+            "professionalId": 216,
+            "slotDurationMinutes": 20,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 330,
+            "professionalId": 217,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "19:00:00",
+            "id": 331,
+            "professionalId": 217,
+            "slotDurationMinutes": 30,
+            "startTime": "16:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "16:00:00",
+            "id": 332,
+            "professionalId": 218,
+            "slotDurationMinutes": 30,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 333,
+            "professionalId": 218,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 334,
+            "professionalId": 219,
+            "slotDurationMinutes": 30,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 335,
+            "professionalId": 219,
+            "slotDurationMinutes": 30,
+            "startTime": "19:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 336,
+            "professionalId": 220,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "15:00:00",
+            "id": 337,
+            "professionalId": 220,
+            "slotDurationMinutes": 30,
+            "startTime": "12:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "21:00:00",
+            "id": 338,
+            "professionalId": 221,
+            "slotDurationMinutes": 30,
+            "startTime": "18:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "16:00:00",
+            "id": 339,
+            "professionalId": 221,
+            "slotDurationMinutes": 30,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "WEDNESDAY",
+            "enabled": false,
+            "endTime": "13:00:00",
+            "id": 340,
+            "professionalId": 222,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "TUESDAY",
+            "enabled": true,
+            "endTime": "14:00:00",
+            "id": 341,
+            "professionalId": 223,
+            "slotDurationMinutes": 30,
+            "startTime": "11:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "THURSDAY",
+            "enabled": true,
+            "endTime": "19:00:00",
+            "id": 342,
+            "professionalId": 223,
+            "slotDurationMinutes": 30,
+            "startTime": "16:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "MONDAY",
+            "enabled": true,
+            "endTime": "16:00:00",
+            "id": 343,
+            "professionalId": 224,
+            "slotDurationMinutes": 30,
+            "startTime": "13:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          },
+          {
+            "createdAt": "2026-09-01T03:00:00Z",
+            "dayOfWeek": "FRIDAY",
+            "enabled": true,
+            "endTime": "20:00:00",
+            "id": 344,
+            "professionalId": 224,
+            "slotDurationMinutes": 30,
+            "startTime": "17:00:00",
+            "updatedAt": "2026-09-01T03:00:00Z"
+          }
+        ]
+      }
+order: 1000

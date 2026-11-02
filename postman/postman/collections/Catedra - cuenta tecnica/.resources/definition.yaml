@@ -1,2 +1,6 @@
 $kind: collection
 description: ""
+variables:
+  - key: bearer_token_0220
+    secret: true
+    disabled: false

@@ -1,0 +1,22 @@
+$kind: http-request
+name: '6. Cancelar reserva (ESCRIBE: solo si esta CONFIRMED; idempotente si ya esta CANCELLED)'
+url: '{{baseUrl}}/api/appointments/{{reservationProcessId}}/cancel'
+method: POST
+description: |-
+  **Escribe en la cátedra.** Cancela una reserva por `reservationProcessId` (sección 12) y publica `AppointmentCancelled`. Solo se puede cancelar una reserva `CONFIRMED`; cancelar una ya `CANCELLED` es idempotente y devuelve su estado actual.
+
+  Body opcional: `reason` (hasta 500 caracteres).
+
+  Respuestas: `200` con `reservationId`, `reservationProcessId`, `status: CANCELLED` y `cancelledAt`; `404 RESERVATION_NOT_FOUND`; `403 RESERVATION_OWNER_MISMATCH`; `409 RESERVATION_NOT_CANCELLABLE`.
+order: 6000
+headers:
+  - key: Authorization
+    value: 'Bearer {{jwt}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "reason": "Prueba desde Postman"
+    }

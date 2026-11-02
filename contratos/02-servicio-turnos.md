@@ -6,7 +6,7 @@ Consumidor: **app KMP**. Todos los endpoints requieren JWT de usuario y operan *
 
 ### `GET /api/availability?professionalId=15&from=2026-10-12&to=2026-10-25`
 
-Los tres parametros son obligatorios. `to` no puede ser anterior a `from` y el rango maximo es 31 dias (propuesta). Se excluyen horarios pasados.
+Los tres parametros son obligatorios. `to` no puede ser anterior a `from` y el rango maximo es 31 dias contando ambos extremos (configurable con `AVAILABILITY_MAX_RANGE_DAYS`). Los slots salen de la agenda del profesional, menos las ocupaciones de la catedra (`CONFIRMED` y `HELD`). Se excluyen horarios pasados, medidos en la hora local de atencion (`AVAILABILITY_ZONE`, por defecto `America/Argentina/Mendoza`).
 
 Respuesta `200 OK`, ordenada por fecha y hora ascendente:
 
@@ -24,7 +24,7 @@ Respuesta `200 OK`, ordenada por fecha y hora ascendente:
 
 Es una foto: el veredicto real lo da el hold al reservar.
 
-Errores: `400 INVALID_DATE_RANGE`, `404 PROFESSIONAL_NOT_FOUND`, `400 PROFESSIONAL_DISABLED`, `503 CATALOG_UNAVAILABLE`, `503 CATEDRA_UNAVAILABLE`.
+Errores: `400 INVALID_DATE_RANGE` (rango invertido o mayor al maximo), `404 PROFESSIONAL_NOT_FOUND`, `400 PROFESSIONAL_DISABLED` (profesional o categoria deshabilitados), `503 CATALOG_UNAVAILABLE`, `503 CATEDRA_UNAVAILABLE`. Un parametro faltante o de tipo equivocado es `400 BAD_REQUEST`.
 
 ## Reservas
 

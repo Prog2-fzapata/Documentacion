@@ -3,4 +3,5 @@ url: "{{baseUrl}}/api/student/integration"
 method: GET
 headers:
   Authorization: Bearer {{jwt}}
+examples: .resources/3. Recuperar integracion actual.resources/examples
 order: 3000

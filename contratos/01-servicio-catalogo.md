@@ -100,7 +100,7 @@ Respuesta `200 OK` (con `X-Total-Count`):
 
 ### `GET /api/professionals/{id}`
 
-Mismo objeto que arriba, pero `weeklySchedules` trae **todos** los horarios del profesional (tambien los deshabilitados), cada uno con `id` y `enabled`. Es la **agenda vigente** que usa Turnos. Si el profesional o su categoria estan deshabilitados, se devuelve igual con `enabled=false` (la decision la toma quien consume). Errores: `404 PROFESSIONAL_NOT_FOUND`.
+Mismo objeto que arriba, pero `weeklySchedules` trae **todos** los horarios del profesional (tambien los deshabilitados), cada uno con `id` y `enabled`. Es la **agenda vigente** que usa Turnos. Ademas trae `categoryEnabled`: si la categoria esta deshabilitada, el profesional se devuelve igual (con su propio `enabled`) y quien consume decide; Turnos bloquea sus horarios (D82, A31). Un profesional deshabilitado tambien se devuelve igual, con `enabled=false`. Errores: `404 PROFESSIONAL_NOT_FOUND`.
 
 ## Sincronizacion
 
