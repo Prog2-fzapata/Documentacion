@@ -1,0 +1,113 @@
+# Catálogo y turnos juntos, cada uno con su base, en una misma red: turnos llega a catálogo por el nombre del servicio
+# (http://catalogo:8081). En Linux no se puede hacer con los compose de cada servicio, porque catálogo publica su puerto
+# solo en 127.0.0.1. Los valores salen de los .env de cada servicio, cargados en el shell (ver README.md de esta carpeta).
+name: turnos-integrador
+
+services:
+  postgres-catalogo:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${CATALOGO_DB_NAME}
+      POSTGRES_USER: ${CATALOGO_DB_USER}
+      POSTGRES_PASSWORD: ${CATALOGO_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:${CATALOGO_POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - catalogo_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  postgres-turnos:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${TURNOS_DB_NAME}
+      POSTGRES_USER: ${TURNOS_DB_USER}
+      POSTGRES_PASSWORD: ${TURNOS_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:${TURNOS_POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - turnos_postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  catalogo:
+    build: ../../ServicioCatalogo
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres-catalogo
+      CATALOGO_DB_NAME: ${CATALOGO_DB_NAME}
+      CATALOGO_DB_USER: ${CATALOGO_DB_USER}
+      CATALOGO_DB_PASSWORD: ${CATALOGO_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL}
+      CATEDRA_JWT: ${CATEDRA_JWT}
+      CATEDRA_REDIS_HOST: ${CATEDRA_REDIS_HOST}
+      CATEDRA_REDIS_PORT: ${CATEDRA_REDIS_PORT}
+      CATEDRA_REDIS_USERNAME: ${CATEDRA_REDIS_USERNAME}
+      CATEDRA_REDIS_PASSWORD: ${CATEDRA_REDIS_PASSWORD}
+      CATEDRA_SNAPSHOT_PATH: ${CATEDRA_SNAPSHOT_PATH}
+      CATEDRA_REDIS_KEY_METADATA: ${CATEDRA_REDIS_KEY_METADATA}
+      CATEDRA_REDIS_KEY_CHANGES_PREFIX: ${CATEDRA_REDIS_KEY_CHANGES_PREFIX}
+      CATEDRA_REDIS_KEY_CATEGORIES: ${CATEDRA_REDIS_KEY_CATEGORIES}
+      CATEDRA_REDIS_KEY_PROFESSIONALS: ${CATEDRA_REDIS_KEY_PROFESSIONALS}
+      CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES: ${CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES}
+      CATEDRA_KAFKA_BOOTSTRAP_SERVERS: ${CATEDRA_KAFKA_BOOTSTRAP_SERVERS}
+      CATEDRA_KAFKA_GROUP_ID: ${CATEDRA_KAFKA_GROUP_ID}
+      CATEDRA_KAFKA_CATALOG_TOPIC: ${CATEDRA_KAFKA_CATALOG_TOPIC}
+      # Parámetros de ajuste opcionales: el valor por defecto está en application.properties
+      CATEDRA_KAFKA_MAX_RETRIES:
+      CATEDRA_KAFKA_INITIAL_BACKOFF:
+      CATEDRA_SYNC_INITIAL_DELAY:
+      CATEDRA_SYNC_CHECK_INTERVAL:
+      CATALOGO_PAGE_MAX_SIZE:
+      PASSWORD_ARGON2_MEMORY_KIB: ${PASSWORD_ARGON2_MEMORY_KIB}
+      PASSWORD_ARGON2_ITERATIONS: ${PASSWORD_ARGON2_ITERATIONS}
+      PASSWORD_ARGON2_PARALLELISM: ${PASSWORD_ARGON2_PARALLELISM}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+    ports:
+      - "127.0.0.1:${CATALOGO_PORT:-8081}:8081"
+    depends_on:
+      postgres-catalogo:
+        condition: service_healthy
+
+  turnos:
+    build: ../../ServicioTurnos
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres-turnos
+      TURNOS_DB_NAME: ${TURNOS_DB_NAME}
+      TURNOS_DB_USER: ${TURNOS_DB_USER}
+      TURNOS_DB_PASSWORD: ${TURNOS_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      # Por el nombre del servicio, no el CATALOGO_BASE_URL del .env de turnos (pensado para el compose suelto)
+      CATALOGO_BASE_URL: http://catalogo:8081
+      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL}
+      CATEDRA_JWT: ${CATEDRA_JWT}
+      # Parámetros de ajuste opcionales: el valor por defecto está en application.properties
+      CATALOGO_CONNECT_TIMEOUT:
+      CATALOGO_READ_TIMEOUT:
+      CATALOGO_MAX_ATTEMPTS:
+      CATALOGO_INITIAL_BACKOFF:
+      CATEDRA_CONNECT_TIMEOUT:
+      CATEDRA_READ_TIMEOUT:
+      CATEDRA_MAX_ATTEMPTS:
+      CATEDRA_INITIAL_BACKOFF:
+      AVAILABILITY_ZONE:
+      AVAILABILITY_MAX_RANGE_DAYS:
+    ports:
+      - "127.0.0.1:${TURNOS_PORT:-8082}:8082"
+    depends_on:
+      postgres-turnos:
+        condition: service_healthy
+
+volumes:
+  catalogo_postgres_data:
+  turnos_postgres_data:
