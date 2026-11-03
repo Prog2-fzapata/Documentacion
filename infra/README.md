@@ -12,7 +12,7 @@ Hace falta porque con los compose de cada servicio, en Linux, el contenedor de t
 
 ## Levantar
 
-Los dos `.env` se cargan en el shell. Las variables compartidas (`JWT_SECRET`, `CATEDRA_BASE_URL`, `CATEDRA_JWT`) tienen que valer lo mismo en ambos. El `CATALOGO_BASE_URL` del `.env` de turnos no se usa acá.
+Los dos `.env` se cargan en el shell. Las variables compartidas (`JWT_SECRET`, `CATEDRA_BASE_URL`, `CATEDRA_JWT`, `CATEDRA_KAFKA_BOOTSTRAP_SERVERS` y `CATEDRA_KAFKA_GROUP_ID`) tienen que valer lo mismo en ambos. El `CATALOGO_BASE_URL` del `.env` de turnos no se usa acá.
 
 ```bash
 bash -c 'set -a; . ../../ServicioCatalogo/.env; . ../../ServicioTurnos/.env; set +a; docker compose up -d --build'
