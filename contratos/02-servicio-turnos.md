@@ -45,12 +45,13 @@ Errores: `400 INVALID_DATE_RANGE` (rango invertido o mayor al maximo), `404 PROF
   "patientPhone": null,
   "failureReason": null,
   "cancellationReason": null,
+  "canSubmitPhone": false,
   "createdAt": "2026-10-07T14:35:00Z",
   "updatedAt": "2026-10-07T14:35:10Z"
 }
 ```
 
-`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido en estados no finales. Nunca se expone el `user_id`.
+`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido en estados no finales. `canSubmitPhone` es `true` cuando la reserva espera el teléfono (`WAITING_PHONE`) y la catedra ya lo pidio: es la señal para habilitar el formulario (ver la nota al final); la app compara `expiresAt` con la hora para saber si todavia hay tiempo. Nunca se expone el `user_id`.
 
 ### `POST /api/reservations`
 
@@ -81,9 +82,11 @@ Errores:
 { "phoneNumber": "+5492615551234" }
 ```
 
-Valida `^\+?[0-9]{7,15}$` (tras quitar espacios, guiones, parentesis y puntos). Solo en `WAITING_PHONE` y con el pedido de la catedra ya recibido. Respuesta `202 Accepted`: `Reservation` en `PHONE_QUEUED`. El resultado final llega por SSE.
+Valida `^\+?[0-9]{7,15}$` (tras quitar espacios, guiones, parentesis y puntos): se acepta `+5492616159550`, `+542616159550`, `2616159550`, `(0261) 615-9550`, etc. El numero se guarda y envia **tal cual queda tras quitar los separadores**, sin completar el codigo de pais ni quitar el `0` o el `15` (`+549...` y `+54...` son numeros distintos). Un texto de mas de 40 caracteres tambien se rechaza. Solo en `WAITING_PHONE` (`canSubmitPhone`). Respuesta `202 Accepted`: `Reservation` en `PHONE_QUEUED`, con el telefono normalizado en `patientPhone`. El resultado final llega por SSE.
 
-Errores: `400 VALIDATION_ERROR`, `404 RESERVATION_NOT_FOUND`, `409 INVALID_RESERVATION_STATE` (incluye "todavia no llego el pedido de telefono"), `409 RESERVATION_EXPIRED`.
+Errores: `400 VALIDATION_ERROR` (`fieldErrors` con `phoneNumber`), `404 RESERVATION_NOT_FOUND` (tambien ajena), `409 INVALID_RESERVATION_STATE` (incluye "todavia no llego el pedido de telefono" y un segundo envio con la reserva ya en `PHONE_QUEUED`), `409 RESERVATION_EXPIRED` (paso su `expiresAt`).
+
+El estado y el mensaje a la catedra se guardan en una sola transaccion (outbox); un relay interno lo publica en Kafka, normalmente en menos de un segundo, y recien con el ack pasa a `PHONE_SUBMITTED`.
 
 Si la catedra rechaza el telefono, la reserva vuelve a `WAITING_PHONE` y el usuario puede reintentar hasta `expiresAt`.
 
@@ -125,4 +128,4 @@ data: {"id":101,"status":"CONFIRMED","expiresAt":null,"updatedAt":"2026-10-07T14
 
 ## Nota: pedido de telefono vs. respuesta del POST
 
-La catedra publica `AdditionalInformationRequested` **despues** del `202` de confirm, de forma asincrona. Por eso `POST /api/reservations` puede devolver la reserva en `WAITING_PHONE` antes de tener guardado el `requestEventId`. Regla: `POST .../phone` responde `409 INVALID_RESERVATION_STATE` hasta recibir el pedido; la app solo habilita el formulario cuando el SSE (o una consulta) informa que se puede enviar. Alternativa a evaluar: un campo `phoneRequested` (boolean) en `Reservation` (ver A8).
+La catedra publica `AdditionalInformationRequested` **despues** del `202` de confirm, de forma asincrona. Por eso `POST /api/reservations` puede devolver la reserva en `WAITING_PHONE` antes de tener guardado el `requestEventId`. Regla: `POST .../phone` responde `409 INVALID_RESERVATION_STATE` hasta recibir el pedido; la app solo habilita el formulario cuando el SSE (o una consulta) informa que se puede enviar. **Decidido (A8):** `Reservation.canSubmitPhone` (boolean). Vale `true` solo con la reserva en `WAITING_PHONE` y el pedido ya recibido; tambien vuelve a ser `true` si la catedra rechaza el numero y la reserva regresa a `WAITING_PHONE`.
