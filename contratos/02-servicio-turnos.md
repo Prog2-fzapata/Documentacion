@@ -89,17 +89,21 @@ Si la catedra rechaza el telefono, la reserva vuelve a `WAITING_PHONE` y el usua
 
 ### `GET /api/reservations?status=CONFIRMED&page=0&size=20`
 
-Lista **solo las reservas del usuario autenticado**. Filtro opcional `status`. Orden por defecto: fecha y hora descendente. Con `X-Total-Count`.
+Lista **solo las reservas del usuario autenticado**. Filtro opcional `status` (un valor de `ReservationStatus`; otro da `400`). Orden fijo: fecha y hora del turno descendente (el `sort` del pedido se ignora). Con `X-Total-Count` y `Link` (`first`, `prev`, `next`, `last`, con el mismo filtro). `size` vale 20 por defecto y tiene un tope configurable (100 por defecto; un `size` mayor se reduce al tope).
+
+**Intentos descartados:** sin `status` la lista no incluye las reservas `EXPIRED` ni `FAILED` (son intentos que no llegaron a ser una reserva). Con `status` se devuelven exactamente las de ese estado: `?status=FAILED` trae las `FAILED` y `?status=EXPIRED` las `EXPIRED`. Una `CANCELLED` aparece siempre.
 
 ### `GET /api/reservations/{id}`
 
-Una reserva propia. `404 RESERVATION_NOT_FOUND` tambien para reservas ajenas.
+Una reserva propia. `404 RESERVATION_NOT_FOUND` tambien para reservas ajenas: la respuesta es idéntica a la de una inexistente.
 
 ### `POST /api/reservations/{id}/cancel`
 
 Body opcional: `{ "reason": "hasta 500 caracteres" }`. Solo reservas propias en `CONFIRMED`. `200 OK`: `Reservation` en `CANCELLED`. Cancelar una ya `CANCELLED` devuelve su estado actual (idempotente).
 
-Errores: `404 RESERVATION_NOT_FOUND`, `409 RESERVATION_NOT_CANCELLABLE`, `503 CATEDRA_UNAVAILABLE`.
+Errores: `404 RESERVATION_NOT_FOUND` (también ajena), `409 RESERVATION_NOT_CANCELLABLE` (la reserva no está `CONFIRMED`, o la cátedra no permite cancelarla), `503 CATEDRA_UNAVAILABLE`, `400 VALIDATION_ERROR` (motivo de más de 500 caracteres).
+
+Orden: primero se cancela en la cátedra y recién entonces la reserva pasa a `CANCELLED`; si la cátedra falla no cambia nada y se puede repetir el pedido. Cancelar una reserva ya `CANCELLED` no llama a la cátedra y conserva el motivo original.
 
 ## Cambios en tiempo real (SSE)
 
