@@ -12,6 +12,7 @@ Borradores de analisis y diseño. Los diagramas usan Mermaid (se ven en GitHub, 
 | --- | --- |
 | [decisiones.md](decisiones.md) | **Registro de decisiones y preguntas abiertas** (leer primero) |
 | [planificacion.md](planificacion.md) | Milestones, issues por repo, orden de ataque y dependencias |
+| [kcat.md](kcat.md) | Cómo mirar los topics de Kafka de la cátedra con `kcat` (comandos y flags) |
 | [infra/README.md](infra/README.md) | Docker Compose que levanta catálogo y turnos juntos (en Linux, la forma de que turnos alcance a catálogo) |
 | [.claude/skills/hexagonal](.claude/skills/hexagonal/SKILL.md) | Skill de arquitectura hexagonal de la catedra |
 | [.claude/skills/repaso](.claude/skills/repaso/SKILL.md) | Skill `/repaso`: guarda el estado de trabajo y lo retoma tras un `/clear` o `/compact` |
