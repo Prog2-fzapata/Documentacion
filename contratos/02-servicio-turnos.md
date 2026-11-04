@@ -51,7 +51,7 @@ Errores: `400 INVALID_DATE_RANGE` (rango invertido o mayor al maximo), `404 PROF
 }
 ```
 
-`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido en estados no finales. `canSubmitPhone` es `true` cuando la reserva espera el teléfono (`WAITING_PHONE`) y la catedra ya lo pidio: es la señal para habilitar el formulario (ver la nota al final); la app compara `expiresAt` con la hora para saber si todavia hay tiempo. Nunca se expone el `user_id`.
+`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido en estados no finales. `canSubmitPhone` es `true` cuando la reserva espera el teléfono (`WAITING_PHONE`) y la catedra ya lo pidio: es la señal para habilitar el formulario (ver la nota al final); la app compara `expiresAt` con la hora para saber si todavia hay tiempo. Una reserva abierta que pasa su `expiresAt` se cierra a `EXPIRED` con `failureReason` `HOLD_EXPIRED`: por el evento de la catedra o, si no llega, por una tarea del backend que espera un margen de 60 s y corre cada 30 s (entre el vencimiento y el cierre pueden pasar de 60 a 90 s, D91); si la catedra ya la tenia confirmada, se repara a `CONFIRMED` en vez de expirarla. Nunca se expone el `user_id`.
 
 ### `POST /api/reservations`
 
