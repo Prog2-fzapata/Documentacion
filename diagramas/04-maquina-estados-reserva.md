@@ -61,4 +61,4 @@ flowchart TD
 
 - **[decidir]** Si el mensaje del telefono se publica directo o via tabla outbox (garantiza que no se pierda ante una caida entre guardar estado y publicar).
 - **Decidido (D91):** una tarea programada pasa a `EXPIRED` los procesos abiertos con `expiresAt` vencido hace mas que un margen (60 s); antes de expirar uno en `PHONE_QUEUED` o `PHONE_SUBMITTED` consulta `GET /api/appointments` y, si la catedra lo tiene confirmado, lo repara a `CONFIRMED`; ante la duda no expira. No hay ejecucion especial al arrancar.
-- **[decidir]** Recuperacion al arrancar (`#16`): los procesos dudosos (`HOLD_REQUESTED` sin ids, sin `expiresAt`) se reconcilian con `GET /api/appointments`.
+- **Decidido (D92):** al terminar de arrancar, una vez, los `HOLD_REQUESTED` sin ids creados antes de que arrancara la instancia pasan a `FAILED` (`HOLD_RESULT_UNKNOWN`) y los `PHONE_QUEUED` y `PHONE_SUBMITTED` que la catedra tiene confirmados (`GET /api/appointments`) se reparan a `CONFIRMED`; ante la duda no se toca nada. `HELD`, `WAITING_PHONE` y `CONFIRMED` no se tocan.
