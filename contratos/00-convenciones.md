@@ -56,5 +56,5 @@ Errores comunes:
 | 405 | `METHOD_NOT_ALLOWED` | método HTTP no permitido para la ruta |
 | 415 | `UNSUPPORTED_MEDIA_TYPE` | `Content-Type` no soportado |
 | 404 | `*_NOT_FOUND` | recurso inexistente **o ajeno** (no se distingue, para no revelar existencia) |
-| 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` | dependencia requerida caida o con timeout |
+| 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` / `DATABASE_UNAVAILABLE` | dependencia requerida caida o con timeout (en turnos tambien la base de datos propia) |
 | 500 | (sin garantia) | error inesperado, sin detalles internos |

@@ -74,7 +74,7 @@ Errores:
 | 404 | `PROFESSIONAL_NOT_FOUND` | profesional inexistente |
 | 409 | `SLOT_UNAVAILABLE` | la catedra respondio `SLOT_ALREADY_HELD` o `SLOT_ALREADY_RESERVED`, o tras perder la respuesta del hold las ocupaciones muestran el horario ocupado |
 | 409 | `RESERVATION_EXPIRED` | el hold vencio antes de confirmarse y no se consiguio otro dentro de los intentos |
-| 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` | dependencia caida |
+| 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` / `DATABASE_UNAVAILABLE` | dependencia caida (o la base de datos propia, que no responde en 5 s) |
 
 ### `POST /api/reservations/{id}/phone`
 
