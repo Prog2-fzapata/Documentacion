@@ -113,7 +113,7 @@ flowchart LR
 | Listar mis reservas | `GetAllReservationsUseCase` | `GET /api/reservations` |
 | Consultar mi reserva | `GetReservationByIdUseCase` | `GET /api/reservations/{id}` |
 | Cancelar mi reserva | `CancelReservationUseCase` | `POST /api/reservations/{id}/cancel` |
-| Suscribirse a cambios | `SubscribeReservationEventsUseCase` | `GET /api/reservations/stream` (SSE) |
+| Suscribirse a cambios | (sin caso de uso: el controller abre la conexion en el registro de conexiones) | `GET /api/reservations/stream` (SSE) |
 | Procesar eventos de la catedra | `HandleAdditionalInformationRequestedUseCase`, `HandleAppointmentConfirmedUseCase`, `HandleAdditionalInformationRejectedUseCase`, `HandleProcessClosedUseCase`, `HandleAppointmentCancelledUseCase` | `@KafkaListener` |
 | Publicar mensajes pendientes | `PublishPendingMessagesUseCase` | `@Scheduled` |
 | Recuperar procesos al arrancar | `RecoverReservationsUseCase` | `ApplicationReadyEvent` |
@@ -124,4 +124,5 @@ flowchart LR
 - Los eventos de la catedra que llegan por Kafka son **casos de uso como cualquier otro**; el listener solo los traduce a un objeto de dominio y llama al puerto. Asi se pueden probar sin Kafka.
 - Los casos de uso de eventos aplican idempotencia (`processed_events`) y las transiciones de la maquina de estados ([04](04-maquina-estados-reserva.md)).
 - `HandleProcessClosedUseCase` agrupa `AppointmentProcessExpired` y `AppointmentProcessInvalid`: ambos cierran el proceso con distinto estado final.
+- El stream SSE es solo transporte: el controller `ReservationStreamController` registra la conexion en `ReservationStreamRegistry` (infraestructura) y no pasa por un caso de uso. El aviso sale por el puerto `out` `ReservationChangePublisher`, que llama `ApplyReservationTransitionUseCase` al guardar un cambio; el adaptador espera al COMMIT. Ver D90 de [decisiones.md](../decisiones.md).
 - Los puertos `out` (repositorios, cliente de la catedra, Redis, publisher Kafka, cliente de catalogo) se definen al implementar cada slice.

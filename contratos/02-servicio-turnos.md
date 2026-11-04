@@ -117,14 +117,18 @@ Orden: primero se cancela en la cátedra y recién entonces la reserva pasa a `C
 ```
 event: reservation-updated
 id: 101-5
-data: {"id":101,"status":"CONFIRMED","expiresAt":null,"updatedAt":"2026-10-07T14:36:01Z"}
+data: {"id":101,"status":"CONFIRMED","expiresAt":null,"canSubmitPhone":false,"updatedAt":"2026-10-07T14:36:01Z"}
 ```
 
-- Se emite un `reservation-updated` en cada cambio de estado (incluye `WAITING_PHONE` cuando llega el pedido de telefono, rechazos, confirmacion, vencimiento y cancelacion).
-- El `data` es resumido; para el detalle completo la app llama a `GET /api/reservations/{id}`.
-- Comentario de latido (`: ping`) cada ~25 s para mantener viva la conexion.
+- Se emite un `reservation-updated` en cada cambio de una reserva: de estado (rechazos, confirmacion, vencimiento y cancelacion) y tambien cuando llega el pedido de telefono, que deja la reserva en `WAITING_PHONE` pero pasa `canSubmitPhone` a `true` (por eso el `data` lo lleva: el estado es el mismo que en el aviso anterior).
+- El `data` es un resumen (`id`, `status`, `expiresAt`, `canSubmitPhone`, `updatedAt`); `expiresAt` es `null` si la reserva ya termino, igual que en `Reservation`. Para el detalle completo la app llama a `GET /api/reservations/{id}`.
+- El `id` del evento es `{id de la reserva}-{version}` y crece con cada cambio. **No hay historia ni `Last-Event-ID`**: un aviso perdido no se reenvia.
+- El aviso sale despues de que el cambio quedo guardado: si la app consulta al recibirlo, lo ve. Un cambio que se deshace no avisa.
+- Al conectar el servidor manda enseguida un comentario (`:ping`) para que el cliente reciba las cabeceras, y repite el comentario cada ~25 s (`STREAM_HEARTBEAT_INTERVAL`) para mantener viva la conexion. Un cliente que lo recibe como evento debe ignorarlo.
 - **La app no depende del stream**: al conectar o reconectar consulta `GET /api/reservations` de procesos no finales y refresca. El stream es una optimizacion, no la fuente de verdad.
-- Si el JWT vence, el servidor cierra con `401` y la app vuelve a autenticarse.
+- Cada usuario puede tener hasta 5 conexiones abiertas a la vez (`STREAM_MAX_CONNECTIONS_PER_USER`); al abrir una mas, el servidor cierra la mas vieja.
+- **JWT vencido:** el servidor cierra el stream en el primer latido posterior al `exp` del token. Una vez enviada la cabecera `200` no existe un `401` en esa conexion, asi que la app lo detecta porque el stream termina. Antes de reconectar tiene que renovar el token: el servidor tolera 60 s de desfase de reloj (valor por defecto de Spring), y con un token vencido hace menos que eso la conexion se acepta y se vuelve a cerrar en el siguiente latido; pasada la tolerancia la respuesta es `401`.
+- Al apagar o reiniciar el servicio se cierran todos los streams; la app reconecta y reconsulta.
 
 ## Nota: pedido de telefono vs. respuesta del POST
 
