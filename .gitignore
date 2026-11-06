@@ -4,3 +4,7 @@
 # Postman guarda la respuesta completa de la cátedra como ejemplo: estas dos traen el JWT técnico y la clave de Redis
 postman/postman/collections/Catedra - cuenta tecnica/.resources/2. Autenticar y obtener configuracion.resources/
 postman/postman/collections/Catedra - cuenta tecnica/.resources/3. Recuperar integracion actual.resources/
+
+# Guia de estudio personal (no es un entregable ni un documento de trabajo del proyecto)
+GUIA.md
+GUIA-parte-1.pdf

@@ -51,7 +51,7 @@ Errores: `400 INVALID_DATE_RANGE` (rango invertido o mayor al maximo), `404 PROF
 }
 ```
 
-`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido en estados no finales. `canSubmitPhone` es `true` cuando la reserva espera el teléfono (`WAITING_PHONE`) y la catedra ya lo pidio: es la señal para habilitar el formulario (ver la nota al final); la app compara `expiresAt` con la hora para saber si todavia hay tiempo. Una reserva abierta que pasa su `expiresAt` se cierra a `EXPIRED` con `failureReason` `HOLD_EXPIRED`: por el evento de la catedra o, si no llega, por una tarea del backend que espera un margen de 60 s y corre cada 30 s (entre el vencimiento y el cierre pueden pasar de 60 a 90 s, D91); si la catedra ya la tenia confirmada, se repara a `CONFIRMED` en vez de expirarla. Nunca se expone el `user_id`.
+`status`: `HOLD_REQUESTED`, `HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`, `CONFIRMED`, `EXPIRED`, `FAILED`, `CANCELLED`. `id` es el identificador local; `expiresAt` solo tiene sentido mientras la reserva puede vencer (`HELD`, `WAITING_PHONE`, `PHONE_QUEUED`, `PHONE_SUBMITTED`): en `CONFIRMED` y en los estados finales es `null`. `canSubmitPhone` es `true` cuando la reserva espera el teléfono (`WAITING_PHONE`) y la catedra ya lo pidio: es la señal para habilitar el formulario (ver la nota al final); la app compara `expiresAt` con la hora para saber si todavia hay tiempo. Una reserva abierta que pasa su `expiresAt` se cierra a `EXPIRED` con `failureReason` `HOLD_EXPIRED`: por el evento de la catedra o, si no llega, por una tarea del backend que espera un margen de 60 s y corre cada 30 s (entre el vencimiento y el cierre pueden pasar de 60 a 90 s, D91); si la catedra ya la tenia confirmada, se repara a `CONFIRMED` en vez de expirarla. Nunca se expone el `user_id`.
 
 ### `POST /api/reservations`
 
@@ -74,6 +74,7 @@ Errores:
 | 404 | `PROFESSIONAL_NOT_FOUND` | profesional inexistente |
 | 409 | `SLOT_UNAVAILABLE` | la catedra respondio `SLOT_ALREADY_HELD` o `SLOT_ALREADY_RESERVED`, o tras perder la respuesta del hold las ocupaciones muestran el horario ocupado |
 | 409 | `RESERVATION_EXPIRED` | el hold vencio antes de confirmarse y no se consiguio otro dentro de los intentos |
+| 409 | `RESERVATION_CONFLICT` | otra operacion modifico la reserva mas veces de las que se reintenta; la app consulta su estado antes de repetir el pedido |
 | 503 | `CATALOG_UNAVAILABLE` / `CATEDRA_UNAVAILABLE` / `DATABASE_UNAVAILABLE` | dependencia caida (o la base de datos propia, que no responde en 5 s) |
 
 ### `POST /api/reservations/{id}/phone`
@@ -84,7 +85,7 @@ Errores:
 
 Valida `^\+?[0-9]{7,15}$` (tras quitar espacios, guiones, parentesis y puntos): se acepta `+5492616159550`, `+542616159550`, `2616159550`, `(0261) 615-9550`, etc. El numero se guarda y envia **tal cual queda tras quitar los separadores**, sin completar el codigo de pais ni quitar el `0` o el `15` (`+549...` y `+54...` son numeros distintos). Un texto de mas de 40 caracteres tambien se rechaza. Solo en `WAITING_PHONE` (`canSubmitPhone`). Respuesta `202 Accepted`: `Reservation` en `PHONE_QUEUED`, con el telefono normalizado en `patientPhone`. El resultado final llega por SSE.
 
-Errores: `400 VALIDATION_ERROR` (`fieldErrors` con `phoneNumber`), `404 RESERVATION_NOT_FOUND` (tambien ajena), `409 INVALID_RESERVATION_STATE` (incluye "todavia no llego el pedido de telefono" y un segundo envio con la reserva ya en `PHONE_QUEUED`), `409 RESERVATION_EXPIRED` (paso su `expiresAt`).
+Errores: `400 VALIDATION_ERROR` (`fieldErrors` con `phoneNumber`), `404 RESERVATION_NOT_FOUND` (tambien ajena), `409 INVALID_RESERVATION_STATE` (incluye "todavia no llego el pedido de telefono" y un segundo envio con la reserva ya en `PHONE_QUEUED`), `409 RESERVATION_EXPIRED` (paso su `expiresAt`), `409 RESERVATION_CONFLICT` (otra operacion modifico la reserva mas veces de las que se reintenta: consultar su estado antes de repetir).
 
 El estado y el mensaje a la catedra se guardan en una sola transaccion (outbox); un relay interno lo publica en Kafka, normalmente en menos de un segundo, y recien con el ack pasa a `PHONE_SUBMITTED`.
 
@@ -104,7 +105,7 @@ Una reserva propia. `404 RESERVATION_NOT_FOUND` tambien para reservas ajenas: la
 
 Body opcional: `{ "reason": "hasta 500 caracteres" }`. Solo reservas propias en `CONFIRMED`. `200 OK`: `Reservation` en `CANCELLED`. Cancelar una ya `CANCELLED` devuelve su estado actual (idempotente).
 
-Errores: `404 RESERVATION_NOT_FOUND` (también ajena), `409 RESERVATION_NOT_CANCELLABLE` (la reserva no está `CONFIRMED`, o la cátedra no permite cancelarla), `503 CATEDRA_UNAVAILABLE`, `400 VALIDATION_ERROR` (motivo de más de 500 caracteres).
+Errores: `404 RESERVATION_NOT_FOUND` (también ajena), `409 RESERVATION_NOT_CANCELLABLE` (la reserva no está `CONFIRMED`, o la cátedra no permite cancelarla), `409 RESERVATION_CONFLICT` (otra operación modificó la reserva más veces de las que se reintenta; la cátedra pudo haberla cancelado ya, así que se consulta el estado antes de repetir), `503 CATEDRA_UNAVAILABLE`, `400 VALIDATION_ERROR` (motivo de más de 500 caracteres).
 
 Orden: primero se cancela en la cátedra y recién entonces la reserva pasa a `CANCELLED`; si la cátedra falla no cambia nada y se puede repetir el pedido. Cancelar una reserva ya `CANCELLED` no llama a la cátedra y conserva el motivo original.
 
@@ -121,7 +122,7 @@ data: {"id":101,"status":"CONFIRMED","expiresAt":null,"canSubmitPhone":false,"up
 ```
 
 - Se emite un `reservation-updated` en cada cambio de una reserva: de estado (rechazos, confirmacion, vencimiento y cancelacion) y tambien cuando llega el pedido de telefono, que deja la reserva en `WAITING_PHONE` pero pasa `canSubmitPhone` a `true` (por eso el `data` lo lleva: el estado es el mismo que en el aviso anterior).
-- El `data` es un resumen (`id`, `status`, `expiresAt`, `canSubmitPhone`, `updatedAt`); `expiresAt` es `null` si la reserva ya termino, igual que en `Reservation`. Para el detalle completo la app llama a `GET /api/reservations/{id}`.
+- El `data` es un resumen (`id`, `status`, `expiresAt`, `canSubmitPhone`, `updatedAt`); `expiresAt` es `null` si la reserva ya no puede vencer (terminada o confirmada), igual que en `Reservation`. Para el detalle completo la app llama a `GET /api/reservations/{id}`.
 - El `id` del evento es `{id de la reserva}-{version}` y crece con cada cambio. **No hay historia ni `Last-Event-ID`**: un aviso perdido no se reenvia.
 - El aviso sale despues de que el cambio quedo guardado: si la app consulta al recibirlo, lo ve. Un cambio que se deshace no avisa.
 - Al conectar el servidor manda enseguida un comentario (`:ping`) para que el cliente reciba las cabeceras, y repite el comentario cada ~25 s (`STREAM_HEARTBEAT_INTERVAL`) para mantener viva la conexion. Un cliente que lo recibe como evento debe ignorarlo.
