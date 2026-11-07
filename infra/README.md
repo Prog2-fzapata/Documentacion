@@ -31,6 +31,14 @@ Para los comandos que no construyen nada alcanza con `docker compose` en esta ca
 | Detener (conserva los datos) | `docker compose down` |
 | Borrar todo, incluidos los datos | `docker compose down -v` |
 
+Turnos escribe sus logs en JSON, una línea por evento. Para leerlos a ojo, `logs.jq` deja una línea corta por evento y salta lo que no es JSON:
+
+```bash
+docker compose logs -f --no-log-prefix turnos | jq -R -r -f logs.jq
+```
+
+Para filtrar por un campo: `docker compose logs --no-log-prefix turnos | jq -R -c 'fromjson? | select(.reservationId == 12)'`.
+
 No usar `docker compose config`: imprime los valores de las variables, incluido el JWT técnico.
 
 Este compose usa su propio proyecto (`turnos-integrador`) y sus propios volúmenes: no comparte datos con los compose de cada servicio, y catálogo vuelve a sincronizar con la cátedra al primer arranque.
