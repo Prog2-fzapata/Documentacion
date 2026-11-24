@@ -50,7 +50,7 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | CAT-03 | Slice `usuario`: registro | M2 | `POST /api/register` segun contrato; hash BCrypt; usuario activo; validaciones; tests |
 | CAT-04 | Slice `usuario`: autenticacion y emision del JWT | M2 | `POST /api/authenticate` (`rememberMe`), `GET` y `POST /api/account` (D34); firma HS512 (D32); claims `sub`, `uid`, `auth`, `iat` y `exp` (sin nombres); 401 en credenciales invalidas; tests. Incluye la validacion del JWT (D47) |
 | CAT-05 | Seguridad: filtro JWT, endpoints publicos y CORS | M2 | La validacion base ya esta desde CAT-04 (D47). Queda: 401 y 403 en `problem+json`, tests de rechazo y esquema Bearer en Swagger. CORS pospuesto (A16) |
-| CAT-06 | Modelo del catalogo y migraciones | M3 | Tablas de categoria, profesional, horario, `sync_state`, `processed_event` segun [05](diagramas/05-modelo-de-datos.md) |
+| CAT-06 | Modelo del catalogo y migraciones | M3 | Tablas de categoria, profesional, horario, `sync_state`, `processed_event` segun `docs/modelo-de-datos.md` de catalogo |
 | CAT-07 | Cliente de la catedra: snapshot REST con JWT tecnico | M3 | Puerto `out` + adapter; timeout configurable; errores traducidos; JWT tecnico solo por entorno |
 | CAT-08 | Sincronizacion completa (snapshot) | M3 | Reemplazo atomico de las 3 colecciones y de la version en una transaccion; falla = no cambia nada; tests |
 | CAT-09 | Cliente Redis: metadata, versiones, entidades y cambios | M3 | Lectura de `catedra:sync:*` segun anexo §14; usuario y password por entorno |
@@ -70,12 +70,12 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | TUR-01 | Proyecto Spring Boot base y estructura hexagonal | M1 | Igual que CAT-01 contra `turnos_db` |
 | TUR-02 | Dockerfile y configuracion del servicio | M1 | Igual que CAT-02 |
 | TUR-03 | Seguridad: validacion del JWT emitido por catalogo | M2 | Valida firma, vigencia y autoridades; 401/403; `uid` solo desde el JWT; A3 resuelto; tests |
-| TUR-04 | Modelo de datos y migraciones | M2 | `reservation_processes`, `outbox_events`, `processed_events` e indices segun [05](diagramas/05-modelo-de-datos.md) |
+| TUR-04 | Modelo de datos y migraciones | M2 | `reservation_processes`, `outbox_events`, `processed_events` e indices segun `docs/modelo-de-datos.md` de turnos |
 | TUR-05 | Cliente de catalogo con propagacion del JWT | M4 | Puerto `out` + adapter; timeout y reintentos limitados; 5xx o timeout = `CATALOG_UNAVAILABLE` |
 | TUR-06 | Cliente de la catedra: ocupaciones, holds, confirm, listado y cancelacion | M4 | Un adapter con JWT tecnico por entorno; traduccion de errores del anexo §13; timeouts y reintentos limitados |
 | TUR-07 | Disponibilidad | M4 | `GET /api/availability`: slots de la agenda menos ocupaciones, ordenados, sin horarios pasados; tests |
 | TUR-08 | Iniciar reserva | M5 | Valida con catalogo, hold, confirm; estados `HOLD_REQUESTED` a `WAITING_PHONE`; `409 SLOT_UNAVAILABLE`; ownership; tests |
-| TUR-09 | Maquina de estados de la reserva | M5 | Transiciones segun [04](diagramas/04-maquina-estados-reserva.md); estados finales inmutables; bloqueo optimista; tests unitarios |
+| TUR-09 | Maquina de estados de la reserva | M5 | Transiciones segun `docs/maquina-de-estados.md` de turnos; estados finales inmutables; bloqueo optimista; tests unitarios |
 | TUR-10 | Consumer Kafka de eventos de la catedra con deduplicacion | M5 | Cinco eventos procesados por casos de uso; `eventId` idempotente; no retrocede estados finales |
 | TUR-11 | Enviar telefono con outbox | M5 | `POST .../phone`; `PHONE_QUEUED` + outbox en una transaccion; relay publica con `requestEventId` y `enable.idempotence`; `PHONE_SUBMITTED` al confirmar el ack |
 | TUR-12 | Consultar y cancelar reservas propias | M5 | Aislamiento por usuario (404 en ajenas); cancelacion idempotente; tests de acceso cruzado |
