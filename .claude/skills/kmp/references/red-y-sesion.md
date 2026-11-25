@@ -44,7 +44,7 @@ class ApiException(val status: Int, val code: String?, val fieldErrors: List<Fie
 
 - Formato y códigos: la sección de errores de `docs/contrato.md` de cada servicio. La app decide por `status` y `code`, **nunca** por `detail`.
 - **`401`: mirar el `code` y que el pedido llevara token** (ADR 005 del repo KMP). Solo `UNAUTHORIZED` en un pedido con `Authorization` vacía la sesión; `INVALID_CREDENTIALS` es una clave incorrecta al iniciar sesión y no la toca. El servidor no distingue «vencido» de «inválido» a propósito.
-- **`code` es un conjunto abierto** (ADR 005 del repo KMP): `ErrorMessages` traduce los códigos de las tablas de errores de `docs/contrato.md` de cada servicio; si llega uno desconocido, se decide por el estado HTTP con un mensaje genérico. **`failureReason` es texto, no un enumerado** (a veces es lo que informó la cátedra): mensaje genérico si no se reconoce, sin `switch`.
+- **`code` es un conjunto abierto** (ADR 005 del repo KMP): `ErrorMessages` traduce los códigos de las tablas de errores de `docs/contrato.md` de cada servicio; si llega uno desconocido, se decide por el estado HTTP con un mensaje genérico. **`failureReason` es texto, no un enumerado** (a veces es lo que informó la cátedra): `ErrorMessages.forFailure` da un mensaje a los motivos documentados y uno genérico al resto; el motivo solo elige el texto, nunca decide el flujo (ADR 016). `forError` distingue sin conexión, tiempo agotado (`HttpRequestTimeoutException`, `SocketTimeoutException`) y respuesta ilegible (`SerializationException`).
 - Un `ViewModel` también debe tratar los fallos sin respuesta (sin conexión, timeout): son excepciones de Ktor/IO, no `ApiException`. Mostrar un mensaje «sin conexión» y permitir reintentar.
 - Mapa `code → mensaje en español`: una sola clase (por ejemplo `ErrorMessages`) con un `when (code)` y un mensaje genérico para códigos desconocidos.
 
@@ -66,7 +66,7 @@ class ReservationApiService(private val client: HttpClient, private val config: 
 
 ## Sesión y JWT
 
-- `SessionManager`: guarda el JWT en `SessionStore`, guarda el token en una `MutableStateFlow`; expone `tokenFlow: StateFlow<String?>` (KMP-03): quien lo observa vuelve al login cuando pasa a `null`; y un método `expire()` que borra el token. Un `ApiException` con `status == 401` en cualquier llamada lo invoca (el contrato no distingue vencido de inválido).
+- `SessionManager`: guarda el JWT en `SessionStore`, guarda el token en una `MutableStateFlow`; expone `tokenFlow: StateFlow<String?>` (KMP-03): quien lo observa vuelve al login cuando pasa a `null`; un método `logout()` (cierre voluntario) y un `expire()` que lo llama y marca `expired = true`, para que el login avise «La sesión venció» (ADR 016). Un `ApiException` con `status == 401` en cualquier llamada lo invoca (el contrato no distingue vencido de inválido).
 - **El JWT no va en `SharedPreferences` comunes ni en logs** (ADR 004 y 005 del repo KMP). `SessionStore` es una interfaz en `commonMain`; la implementación Android cifra el token con AES-GCM con una clave del Android Keystore, sin librería (`EncryptedSharedPreferences` está deprecada por Google; Tink se descartó). Se guarda el texto cifrado con su vector de inicialización.
 - Vigencia: 24 horas, o 30 días con `rememberMe`. Al abrir la app, si hay token, entrar; si el primer pedido da `401`, volver al login.
 - El JWT técnico de la cátedra **no existe** en la app (`INTEGRATION_REFERENCE-v2.md`).

@@ -1,6 +1,6 @@
 # Registro de decisiones
 
-Las decisiones de cada proyecto están como ADR numerados en `docs/decisiones/` de su repo, con un índice en el README de esa carpeta: `ServicioCatalogo` (32), `ServicioTurnos` (24) y `KMP` (14). Acá va solo lo general (organización, entorno y preferencias de trabajo) y las preguntas abiertas. Las decisiones D1 a D132 y las preguntas ya resueltas están en el historial de git: `git show 856176c:decisiones.md`.
+Las decisiones de cada proyecto están como ADR numerados en `docs/decisiones/` de su repo, con un índice en el README de esa carpeta: `ServicioCatalogo` (32), `ServicioTurnos` (24) y `KMP` (16). Acá va solo lo general (organización, entorno y preferencias de trabajo) y las preguntas abiertas. Las decisiones D1 a D132 y las preguntas ya resueltas están en el historial de git: `git show 856176c:decisiones.md`.
 
 Fuentes de verdad externas: `PROJECT_STATEMENT-v1.md` e `INTEGRATION_REFERENCE-v2.md`. Contratos y diagramas vigentes: en `docs/` de cada servicio.
 

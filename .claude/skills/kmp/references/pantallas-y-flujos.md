@@ -7,17 +7,17 @@ Los endpoints, campos y errores están en `docs/contrato.md` de cada servicio. A
 ```
 Navigator(raíz)
  ├─ sin sesión → LoginScreen ⇄ RegisterScreen
- └─ con sesión → MainNavigationScreen   (TabNavigator + NavigationBar)   [repo: cliente.producto]
-        ├─ Tab Profesionales  → push ProfessionalDetail → push AvailabilityScreen → push BookingScreen
-        ├─ Tab Mis reservas   → push ReservationDetailScreen (teléfono, cancelar)
-        └─ Tab Cuenta         → datos del usuario, cerrar sesión
+ └─ con sesión → MainScreen   (TabNavigator + NavigationBar)
+        ├─ Tab Profesionales  → push AvailabilityScreen → push ReservationScreen (teléfono)
+        ├─ Tab Mis reservas   → push ReservationDetailScreen (cancelar) o ReservationScreen
+        └─ Tab Mi perfil      → datos de la cuenta, cerrar sesión
 ```
 
-- **[verificado en KMP-04]** Con sesión, la raíz muestra `ProfessionalListScreen` (la lista con filtros) y no hay barra de pestañas hasta KMP-09, cuando existe «Mis reservas». Lista paginada: `LazyColumn` + `derivedStateOf` sobre el último ítem visible y `LaunchedEffect(nearTheEnd, items.size)` para pedir la página siguiente; `X-Total-Count` corta; cambiar un filtro cancela el `Job` en curso (ADR 007 del repo). El pedido al llegar al final es el componente `LoadMoreWhenNearEnd`.
+- **[verificado en KMP-04]** Con sesión, la raíz muestra `ProfessionalListScreen` (la lista con filtros) y la barra de pestañas llegó después, con el issue #21 (ADR 014 del repo). Lista paginada: `LazyColumn` + `derivedStateOf` sobre el último ítem visible y `LaunchedEffect(nearTheEnd, items.size)` para pedir la página siguiente; `X-Total-Count` corta; cambiar un filtro cancela el `Job` en curso (ADR 007 del repo). El pedido al llegar al final es el componente `LoadMoreWhenNearEnd`.
 - **[verificado en KMP-05]** `AvailabilityScreen(professionalId, professionalName)` pide ventanas de 30 días seguidas (hoy a hoy+29, luego +30…) con el mismo scroll infinito; salta las ventanas vacías y corta al llegar a un año (`BOOKING_HORIZON_DAYS = 365`); el servicio no tiene tope hacia adelante (devolvió horarios hasta 2100). Fechas con `kotlinx-datetime` (0.7.1; `kotlin.time.Clock` pide `@OptIn(ExperimentalTime::class)` en Kotlin 2.2) y como `String` en los modelos; el contrato admite 31 días contando ambos extremos (ADR 008 del repo).
 - **[verificado en KMP-06]** Reservar: diálogo de confirmación, un pedido a la vez (`reserving`), timeout propio de 45 s en el `POST`, un camino por código y, ante `RESERVATION_CONFLICT`, corte o `503`, buscar en `GET /api/reservations` antes de dejar repetir. El nombre se guarda con `POST /api/account` parcial (solo `firstName` y `lastName`; turnos exige 2 caracteres y el catálogo acepta 1). La reserva abre `ReservationScreen` con `replace`. Las reglas de cada respuesta viven en `ReservationStarter` (sin estado, devuelve un `StartResult`) y el `ViewModel` solo las traduce a estado: cuando un `ViewModel` mezcla dos tareas, se saca una a una clase colaboradora (ADR 011 del repo).
-- Login correcto: `navigator.replaceAll(MainNavigationScreen())`. Sesión vencida (`401`): `replaceAll(LoginScreen())`.
-- Las `Tab` son `object` con `TabOptions` (índice, título, ícono) **[repo]**; las pantallas de detalle, clases `Screen`.
+- Login correcto y sesión vencida (`401`): no se navega a mano. `App` observa `tokenFlow` y, con `key(hasSession)`, reemplaza la raíz por `MainScreen` o `LoginScreen`.
+- Las pestañas son clases `Tab` (`class ProfileScreen : Tab`) con `TabOptions` (índice, título, ícono); dentro de una pestaña `LocalNavigator` es el de las pestañas, así que se apila con `.parent`. Las demás pantallas, clases `Screen`.
 - **[propuesta]** Apilar pantallas dentro de una pestaña (push desde una `Tab`) requiere un `Navigator` anidado; probarlo en KMP-04.
 - Las pantallas reciben datos y callbacks; no deciden la navegación global (la sesión sí).
 
@@ -50,15 +50,15 @@ Navigator(raíz)
 
 | `status` | Qué ve el usuario |
 | --- | --- |
-| `HOLD_REQUESTED`, `HELD` | «Reservando…» con cuenta regresiva si hay `expiresAt` |
+| `HOLD_REQUESTED`, `HELD` | «Reservando…» (sin cuenta regresiva: ADR 012) |
 | `WAITING_PHONE` | Pide el teléfono (campo habilitado solo con `canSubmitPhone`) |
 | `PHONE_QUEUED`, `PHONE_SUBMITTED` | «Enviando el teléfono…» |
 | `CONFIRMED` | Confirmada; permite cancelar |
 | `EXPIRED` | «El tiempo para confirmar terminó» |
-| `FAILED` | Mensaje con `failureReason` |
+| `FAILED` | Mensaje según `failureReason` (genérico si no se reconoce) |
 | `CANCELLED` | Cancelada, con `cancellationReason` |
 
-Sin estados colgados (KMP-10): si pasó `expiresAt` y la pantalla sigue en un estado no final, reconsultar; toda llamada con timeout.
+Sin estados colgados (KMP-10): toda llamada con timeout y el vencimiento lo resuelven el servicio, el stream, `RESERVATION_EXPIRED` al enviar y el «Reintentar» de los 42 s; no hay un reloj con `expiresAt` (ADR 012 y 016).
 
 ## Pruebas que valen la pena (ADR 003)
 
