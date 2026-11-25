@@ -6,13 +6,13 @@ Carpeta de trabajo local (no es un repo). Contiene cuatro repos independientes: 
 
 1. Leer `Documentacion/decisiones.md` (decisiones generales y preguntas abiertas) y los ADR de `docs/decisiones/` del repo en el que se va a trabajar.
 2. Los contratos externos estan en `INTEGRATION_REFERENCE-v2.md`; el alcance en `PROJECT_STATEMENT-v1.md`.
-3. Contratos y diagramas vigentes: en `docs/` de cada servicio (`arquitectura.md`, `modelo-de-datos.md`, `contrato.md`...). En `Documentacion/diagramas/` queda solo el borrador de casos de uso (`06`).
+3. Contratos y diagramas vigentes: en `docs/` de cada servicio (`arquitectura.md`, `modelo-de-datos.md`, `contrato.md`...). Issues e hitos: en GitHub.
 4. Usar la skill `hexagonal` para todo codigo backend (vive en `Documentacion/.claude/skills/hexagonal`; `.claude/skills/hexagonal` es un enlace simbolico).
 5. Antes de un `/clear` o `/compact`, y de nuevo despues, usar `/repaso` (guarda y retoma el estado de trabajo; ver `.claude/skills/repaso`).
 
 ## Donde vive cada documento
 
-- **`Documentacion` (repo propio, no lo revisa el profesor):** contexto de trabajo, `decisiones.md`, planificacion, el borrador de casos de uso, y las skills. Se versiona para tener respaldo en la nube; se puede pushear directo a `main`.
+- **`Documentacion` (repo propio, no lo revisa el profesor):** contexto de trabajo, `decisiones.md` (lo general y las preguntas abiertas), `infra/` y las skills. Se versiona para tener respaldo en la nube; se puede pushear directo a `main`.
 - **Entregables del enunciado (seccion 12):** viven en el README y en `docs/` de **cada repo de servicio** (el enunciado pide codigo y documentacion en tres repos: KMP, catalogo y turnos). Se escriben **a medida que se implementa** lo que describen, porque la documentacion debe coincidir con la solucion. Incluye un resumen breve de decisiones con alternativas descartadas y su justificacion. El diagrama de arquitectura (los dos servicios juntos) va en ambos repos de backend.
 
 ## Regla de documentacion

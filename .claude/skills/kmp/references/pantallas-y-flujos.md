@@ -1,6 +1,6 @@
 # Pantallas, navegación y mapa de issues
 
-Los endpoints, campos y errores están en `docs/contrato.md` de cada servicio (los borradores de `Documentacion/contratos/` quedaron atrás). Acá solo el mapa de la app. Marcas: **[repo]** visto en el repo del profesor, **[propuesta]** sin probar.
+Los endpoints, campos y errores están en `docs/contrato.md` de cada servicio. Acá solo el mapa de la app. Marcas: **[repo]** visto en el repo del profesor, **[propuesta]** sin probar.
 
 ## Navegación (Voyager)
 

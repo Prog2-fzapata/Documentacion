@@ -5,7 +5,7 @@ description: Genera o revisa la app Android del proyecto de turnos hecha con Kot
 
 # KMP — convenciones del proyecto de turnos
 
-App Android (obligatoria) con Kotlin Multiplatform + Compose Multiplatform que consume los dos servicios (catálogo `:8081`, turnos `:8082`). Los contratos vigentes están en `docs/contrato.md` de cada servicio (`ServicioCatalogo` y `ServicioTurnos`) y son la fuente de los endpoints y de los códigos de error: **no copiarlos acá**. Los borradores de `Documentacion/contratos/` quedaron atrás y no hay que usarlos.
+App Android (obligatoria) con Kotlin Multiplatform + Compose Multiplatform que consume los dos servicios (catálogo `:8081`, turnos `:8082`). Los contratos vigentes están en `docs/contrato.md` de cada servicio (`ServicioCatalogo` y `ServicioTurnos`) y son la fuente de los endpoints y de los códigos de error: **no copiarlos acá**.
 
 Fuentes de esta skill, todas del profesor (`dqmdz`): `kmp.cliente.producto` (23/11/2026, la base), `full-stack-mobile-crud-tab-navigator` (formularios y CRUD con Voyager), `kmp.basic_consumer` (MVVM con `ViewModel`), `kmp.navegacion.bottombar` (otra navegación) y `kmp-ktor-basico`. Cada afirmación se marca: **[verificado]** probado en esta máquina, **[repo]** visto en un repo del profesor, **[propuesta]** sin probar, a confirmar al implementar.
 

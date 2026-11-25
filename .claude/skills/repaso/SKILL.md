@@ -19,7 +19,7 @@ El archivo de estado es `Documentacion/.claude/repaso-estado.md`. Está ignorado
 
 1. **Mirar el estado real** de los repos (`Documentacion`, `ServicioCatalogo`, `ServicioTurnos`, `KMP`), todos bajo `/home/franco/Documentos/um/prog2/final`:
    `git -C <repo> status -sb`, `git -C <repo> log --oneline origin/<rama>..HEAD` (commits sin subir) y `gh pr list --state open` en cada repo.
-2. **Registrar lo pendiente de registrar.** Toda decisión tomada en la conversación debe estar en `Documentacion/decisiones.md`; si falta alguna, agregarla ahora (sin commit). Si el usuario dio una preferencia durable ("siempre...", "no hagas..."), guardarla en memoria.
+2. **Registrar lo pendiente de registrar.** Toda decisión tomada en la conversación debe estar registrada: la de un proyecto, como ADR en `docs/decisiones/` de su repo (con su entrada en el índice), y lo general o una pregunta abierta, en `Documentacion/decisiones.md`; si falta alguna, agregarla ahora (sin commit). Si el usuario dio una preferencia durable ("siempre...", "no hagas..."), guardarla en memoria.
 3. **Escribir el archivo** (sobrescribirlo) con esta plantilla, breve y concreto:
 
 ```markdown
@@ -56,8 +56,8 @@ El archivo de estado es `Documentacion/.claude/repaso-estado.md`. Está ignorado
 | Git por repo | `git -C <repo> status -sb`, `git -C <repo> log --oneline -5`, ramas locales |
 | PR y CI | `gh pr list --state all --limit 5` por repo; Sonar: `https://sonarcloud.io/api/qualitygates/project_status?projectKey=Prog2-fzapata_<Servicio>&pullRequest=<n>` |
 | Tablero | `gh project item-list 3 --owner Prog2-fzapata --limit 200 --format json` (columnas Por hacer, En curso, En revisión, Hecho) |
-| Decisiones y dudas | `Documentacion/decisiones.md`: últimas decisiones (D) y preguntas abiertas (A) |
-| Plan | `Documentacion/planificacion.md`: el issue siguiente, sus dependencias y milestone |
+| Decisiones y dudas | `Documentacion/decisiones.md` (lo general y las preguntas abiertas, A) y el índice de ADR de `docs/decisiones/` del repo en que se trabaja |
+| Plan | Los issues y los hitos de GitHub (`gh issue list`) y el tablero: el issue siguiente, sus dependencias y milestone |
 | Issue | `gh issue view <n> --repo Prog2-fzapata/<repo>`: criterios de aceptación |
 
 3. **Si no hay archivo de estado**: reconstruir con las mismas fuentes y avisarlo.
@@ -84,7 +84,7 @@ Complementa a `CLAUDE.md` (reglas de git, comentarios y documentación) y a la s
 2. Rama `feat/<n>-descripcion` desde la rama más reciente de la cadena de PR; un issue por rama.
 3. Código con la skill `hexagonal`: constructor con `@RequiredArgsConstructor` (nunca `@Autowired`, ni `@Data`), una interfaz por caso de uso, constantes sí y estado estático mutable no.
 4. Pruebas en tres niveles: unitarias con Mockito para los casos de uso, `@WebMvcTest` para controllers y handlers, e integración contra PostgreSQL real con Testcontainers. Correr `./mvnw verify` (necesita Docker) y, para confiar en un test, romper el código a propósito y ver que falle.
-5. Documentar al implementar: decisión en `Documentacion/decisiones.md`; las no impuestas por el enunciado, también como entrada de `docs/decisiones.md` del servicio (contexto, decisión, alternativas descartadas, justificación); contratos, diagramas y README si cambian.
+5. Documentar al implementar: la decisión como ADR numerado en `docs/decisiones/` del repo (contexto, decisión, alternativas descartadas, consecuencias), con su entrada en el índice; contratos, diagramas y README si cambian.
 6. Commits en Conventional Commits con cuerpo completo y `Refs #n`, sin `Co-Authored-By`. Mostrar cada mensaje y esperar el OK. Push solo con aprobación explícita, y cada vez.
 7. Abrir el PR hacia la rama que corresponda de la cadena, **sin líneas de atribución** en la descripción, y con sus metadatos completos (lo pidió el profesor): responsable `francozapata05`, etiqueta (`enhancement`, `documentation` o `bug`), el hito del issue y el proyecto 3 con estado «En revisión» (`gh project item-add 3 --owner Prog2-fzapata --url <PR>` y `gh project item-edit`). Si `gh pr edit` falla por «Projects (classic)», usar `gh api -X PATCH repos/<owner>/<repo>/issues/<n>`. Los issues también llevan responsable: asignarlo al tomarlo. Al mergear, el estado del PR en el tablero pasa a «Hecho». Después del push consultar el estado con `mcp__ccd_pr__get_status`, sin sondear. Si el Quality Gate de Sonar falla, leer sus condiciones y sus issues por la API y corregir.
 8. Cuando el usuario mergea en GitHub, darle el mensaje del merge con el número del PR (`tipo: resumen (#N)`) y retargetear los PR que dependían de esa rama.
@@ -93,4 +93,4 @@ Complementa a `CLAUDE.md` (reglas de git, comentarios y documentación) y a la s
 - Cada servicio trae su `docker-compose.yml` y su `.env`, que no se versiona; las variables se cargan con `set -a; . ./.env; set +a`. Los tests no usan ese `.env` ni la base del compose.
 - El entorno se declara con `SPRING_PROFILES_ACTIVE` (`dev` o `prod`).
 - En zsh las variables sin comillas no se separan por espacios: usar `bash -c` para los bucles.
-- Kafka de la cátedra: ver A12 en `decisiones.md` antes de depender de él.
+- Kafka de la cátedra: ver `docs/resiliencia.md` de turnos antes de depender de él; la cátedra se cae a ratos.
