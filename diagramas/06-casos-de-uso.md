@@ -2,7 +2,7 @@
 
 En arquitectura hexagonal cada caso de uso es una interfaz en `domain/ports/in` (una por caso). Este documento es el **catalogo de esos puertos de entrada** y de quien los invoca (adaptador de entrada: controller, listener Kafka o tarea programada).
 
-Slices propuestos: `usuario` y `catalogo` en el servicio de catalogo; `disponibilidad` y `reserva` en el servicio de turnos.
+Slices: `usuario` y `catalogo` en el servicio de catalogo; `reserva` en el servicio de turnos, que incluye la consulta de disponibilidad (D104).
 
 ## Servicio Catalogo
 
@@ -46,10 +46,8 @@ flowchart LR
     K(["Kafka acciones"])
     S(["Tareas programadas / arranque"])
 
-    subgraph disponibilidad["slice disponibilidad"]
-        A1(["Consultar disponibilidad"])
-    end
     subgraph reserva["slice reserva"]
+        A1(["Consultar disponibilidad"])
         R1(["Iniciar reserva (hold + confirm)"])
         R2(["Enviar telefono"])
         R3(["Listar mis reservas"])

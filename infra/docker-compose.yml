@@ -1,6 +1,7 @@
 # Catálogo y turnos juntos, cada uno con su base, en una misma red: turnos llega a catálogo por el nombre del servicio
 # (http://catalogo:8081). En Linux no se puede hacer con los compose de cada servicio, porque catálogo publica su puerto
-# solo en 127.0.0.1. Los valores salen de los .env de cada servicio, cargados en el shell (ver README.md de esta carpeta).
+# solo en 127.0.0.1. Todos los valores salen del .env de esta carpeta (copiar .env.example a .env, ver README.md): si
+# falta una variable obligatoria, Compose se detiene y dice cuál.
 name: turnos-integrador
 
 services:
@@ -8,9 +9,9 @@ services:
     image: postgres:18
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${CATALOGO_DB_NAME}
-      POSTGRES_USER: ${CATALOGO_DB_USER}
-      POSTGRES_PASSWORD: ${CATALOGO_DB_PASSWORD}
+      POSTGRES_DB: ${CATALOGO_DB_NAME:?falta en infra/.env}
+      POSTGRES_USER: ${CATALOGO_DB_USER:?falta en infra/.env}
+      POSTGRES_PASSWORD: ${CATALOGO_DB_PASSWORD:?falta en infra/.env}
     ports:
       - "127.0.0.1:${CATALOGO_POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -25,9 +26,9 @@ services:
     image: postgres:18
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${TURNOS_DB_NAME}
-      POSTGRES_USER: ${TURNOS_DB_USER}
-      POSTGRES_PASSWORD: ${TURNOS_DB_PASSWORD}
+      POSTGRES_DB: ${TURNOS_DB_NAME:?falta en infra/.env}
+      POSTGRES_USER: ${TURNOS_DB_USER:?falta en infra/.env}
+      POSTGRES_PASSWORD: ${TURNOS_DB_PASSWORD:?falta en infra/.env}
     ports:
       - "127.0.0.1:${TURNOS_POSTGRES_PORT:-5433}:5432"
     volumes:
@@ -43,34 +44,35 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_HOST: postgres-catalogo
-      CATALOGO_DB_NAME: ${CATALOGO_DB_NAME}
-      CATALOGO_DB_USER: ${CATALOGO_DB_USER}
-      CATALOGO_DB_PASSWORD: ${CATALOGO_DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL}
-      CATEDRA_JWT: ${CATEDRA_JWT}
-      CATEDRA_REDIS_HOST: ${CATEDRA_REDIS_HOST}
-      CATEDRA_REDIS_PORT: ${CATEDRA_REDIS_PORT}
-      CATEDRA_REDIS_USERNAME: ${CATEDRA_REDIS_USERNAME}
-      CATEDRA_REDIS_PASSWORD: ${CATEDRA_REDIS_PASSWORD}
-      CATEDRA_SNAPSHOT_PATH: ${CATEDRA_SNAPSHOT_PATH}
-      CATEDRA_REDIS_KEY_METADATA: ${CATEDRA_REDIS_KEY_METADATA}
-      CATEDRA_REDIS_KEY_CHANGES_PREFIX: ${CATEDRA_REDIS_KEY_CHANGES_PREFIX}
-      CATEDRA_REDIS_KEY_CATEGORIES: ${CATEDRA_REDIS_KEY_CATEGORIES}
-      CATEDRA_REDIS_KEY_PROFESSIONALS: ${CATEDRA_REDIS_KEY_PROFESSIONALS}
-      CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES: ${CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES}
-      CATEDRA_KAFKA_BOOTSTRAP_SERVERS: ${CATEDRA_KAFKA_BOOTSTRAP_SERVERS}
-      CATEDRA_KAFKA_GROUP_ID: ${CATEDRA_KAFKA_GROUP_ID}
-      CATEDRA_KAFKA_CATALOG_TOPIC: ${CATEDRA_KAFKA_CATALOG_TOPIC}
+      CATALOGO_DB_NAME: ${CATALOGO_DB_NAME:?falta en infra/.env}
+      CATALOGO_DB_USER: ${CATALOGO_DB_USER:?falta en infra/.env}
+      CATALOGO_DB_PASSWORD: ${CATALOGO_DB_PASSWORD:?falta en infra/.env}
+      JWT_SECRET: ${JWT_SECRET:?falta en infra/.env}
+      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL:?falta en infra/.env}
+      CATEDRA_JWT: ${CATEDRA_JWT:?falta en infra/.env}
+      CATEDRA_REDIS_HOST: ${CATEDRA_REDIS_HOST:?falta en infra/.env}
+      CATEDRA_REDIS_PORT: ${CATEDRA_REDIS_PORT:?falta en infra/.env}
+      CATEDRA_REDIS_USERNAME: ${CATEDRA_REDIS_USERNAME:?falta en infra/.env}
+      CATEDRA_REDIS_PASSWORD: ${CATEDRA_REDIS_PASSWORD:?falta en infra/.env}
+      CATEDRA_SNAPSHOT_PATH: ${CATEDRA_SNAPSHOT_PATH:?falta en infra/.env}
+      CATEDRA_REDIS_KEY_METADATA: ${CATEDRA_REDIS_KEY_METADATA:?falta en infra/.env}
+      CATEDRA_REDIS_KEY_CHANGES_PREFIX: ${CATEDRA_REDIS_KEY_CHANGES_PREFIX:?falta en infra/.env}
+      CATEDRA_REDIS_KEY_CATEGORIES: ${CATEDRA_REDIS_KEY_CATEGORIES:?falta en infra/.env}
+      CATEDRA_REDIS_KEY_PROFESSIONALS: ${CATEDRA_REDIS_KEY_PROFESSIONALS:?falta en infra/.env}
+      CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES: ${CATEDRA_REDIS_KEY_WEEKLY_SCHEDULES:?falta en infra/.env}
+      CATEDRA_KAFKA_BOOTSTRAP_SERVERS: ${CATEDRA_KAFKA_BOOTSTRAP_SERVERS:?falta en infra/.env}
+      CATEDRA_KAFKA_GROUP_ID: ${CATEDRA_KAFKA_GROUP_ID:?falta en infra/.env}
+      CATEDRA_KAFKA_CATALOG_TOPIC: ${CATEDRA_KAFKA_CATALOG_TOPIC:?falta en infra/.env}
       # Parámetros de ajuste opcionales: el valor por defecto está en application.properties
       CATEDRA_KAFKA_MAX_RETRIES:
       CATEDRA_KAFKA_INITIAL_BACKOFF:
       CATEDRA_SYNC_INITIAL_DELAY:
       CATEDRA_SYNC_CHECK_INTERVAL:
       CATALOGO_PAGE_MAX_SIZE:
-      PASSWORD_ARGON2_MEMORY_KIB: ${PASSWORD_ARGON2_MEMORY_KIB}
-      PASSWORD_ARGON2_ITERATIONS: ${PASSWORD_ARGON2_ITERATIONS}
-      PASSWORD_ARGON2_PARALLELISM: ${PASSWORD_ARGON2_PARALLELISM}
+      LOG_FORMAT:
+      PASSWORD_ARGON2_MEMORY_KIB: ${PASSWORD_ARGON2_MEMORY_KIB:?falta en infra/.env}
+      PASSWORD_ARGON2_ITERATIONS: ${PASSWORD_ARGON2_ITERATIONS:?falta en infra/.env}
+      PASSWORD_ARGON2_PARALLELISM: ${PASSWORD_ARGON2_PARALLELISM:?falta en infra/.env}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
     ports:
       - "127.0.0.1:${CATALOGO_PORT:-8081}:8081"
@@ -83,19 +85,20 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_HOST: postgres-turnos
-      TURNOS_DB_NAME: ${TURNOS_DB_NAME}
-      TURNOS_DB_USER: ${TURNOS_DB_USER}
-      TURNOS_DB_PASSWORD: ${TURNOS_DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
+      TURNOS_DB_NAME: ${TURNOS_DB_NAME:?falta en infra/.env}
+      TURNOS_DB_USER: ${TURNOS_DB_USER:?falta en infra/.env}
+      TURNOS_DB_PASSWORD: ${TURNOS_DB_PASSWORD:?falta en infra/.env}
+      JWT_SECRET: ${JWT_SECRET:?falta en infra/.env}
       # Por el nombre del servicio, no el CATALOGO_BASE_URL del .env de turnos (pensado para el compose suelto)
       CATALOGO_BASE_URL: http://catalogo:8081
-      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL}
-      CATEDRA_JWT: ${CATEDRA_JWT}
-      CATEDRA_KAFKA_BOOTSTRAP_SERVERS: ${CATEDRA_KAFKA_BOOTSTRAP_SERVERS}
-      CATEDRA_KAFKA_GROUP_ID: ${CATEDRA_KAFKA_GROUP_ID}
-      CATEDRA_KAFKA_APPOINTMENT_ACTIONS_TOPIC: ${CATEDRA_KAFKA_APPOINTMENT_ACTIONS_TOPIC}
-      CATEDRA_KAFKA_APPOINTMENT_PHONE_TOPIC: ${CATEDRA_KAFKA_APPOINTMENT_PHONE_TOPIC}
-      CATEDRA_GROUP_ID: ${CATEDRA_GROUP_ID}
+      CATEDRA_BASE_URL: ${CATEDRA_BASE_URL:?falta en infra/.env}
+      CATEDRA_JWT: ${CATEDRA_JWT:?falta en infra/.env}
+      CATEDRA_KAFKA_BOOTSTRAP_SERVERS: ${CATEDRA_KAFKA_BOOTSTRAP_SERVERS:?falta en infra/.env}
+      CATEDRA_KAFKA_GROUP_ID: ${CATEDRA_KAFKA_GROUP_ID:?falta en infra/.env}
+      CATEDRA_KAFKA_APPOINTMENT_ACTIONS_TOPIC: ${CATEDRA_KAFKA_APPOINTMENT_ACTIONS_TOPIC:?falta en infra/.env}
+      CATEDRA_KAFKA_APPOINTMENT_PHONE_TOPIC: ${CATEDRA_KAFKA_APPOINTMENT_PHONE_TOPIC:?falta en infra/.env}
+      CATEDRA_GROUP_ID: ${CATEDRA_GROUP_ID:?falta en infra/.env}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       # Parámetros de ajuste opcionales: el valor por defecto está en application.properties
       CATALOGO_CONNECT_TIMEOUT:
       CATALOGO_READ_TIMEOUT:

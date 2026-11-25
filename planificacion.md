@@ -88,9 +88,11 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 
 ## Repo `KMP`
 
+Creados el 2026-11-23 en `Prog2-fzapata/KMP` (D123): **KMP-01 a KMP-13 son los issues #1 a #13**, con los hitos M1 a M7. El módulo es `composeApp` (D122), no `shared`.
+
 | Codigo | Issue | Milestone | Criterio de aceptacion |
 | --- | --- | --- | --- |
-| KMP-01 | Proyecto KMP Android base | M1 | Compila y ejecuta; modulo `shared`; configuracion de URLs por build; sin secretos |
+| KMP-01 | Proyecto KMP Android base | M1 | Compila y ejecuta; modulo `composeApp` (D122); configuracion de URLs por build; sin secretos |
 | KMP-02 | Cliente HTTP, almacenamiento seguro del JWT y manejo de errores | M2 | Ktor con `Authorization`; token en almacenamiento seguro; mapeo de `code` a mensajes |
 | KMP-03 | Pantallas de registro e inicio de sesion | M2 | Registro con las validaciones del contrato; login; cierre de sesion; 401 vuelve al login |
 | KMP-04 | Lista de profesionales con filtros | M3 | Categoria, nombre, habilitado, disponibilidad; paginacion; resumen de horarios semanales |
@@ -102,6 +104,9 @@ Los entregables del §12 del enunciado (README, arquitectura, modelo de datos, s
 | KMP-10 | Estados de error y vencimiento | M6 | Mensajes para vencida, fallida, servicio no disponible; sin estados colgados |
 | KMP-11 | Pruebas minimas de la app (opcional) | M6 | Opcionales segun el enunciado |
 | KMP-12 | Evidencias de uso (capturas o video) | M7 | Flujo completo demostrable sin pasos manuales externos |
+| KMP-13 | README, decisiones y diagrama de arquitectura de la app | M7 | Documentación coherente con lo implementado; diagrama de arquitectura (agregado el 2026-11-23) |
+
+**Avance (2026-11-25):** KMP-01 a KMP-06 hechos (PR #14 a #19; el #18 espera la aprobación del profesor). KMP-07 y KMP-08 se hicieron juntos en el PR #20, encadenado sobre el #18 (D132). Antes de KMP-09 va el issue nuevo KMP#21 «Barra inferior y Mi perfil» (A52 resuelta), en el hito M5; KMP#21 está en el PR #22. KMP-09 (Mis reservas y cancelación) se implementó sobre esa rama, con lista en dos secciones por día, detalle y cancelación (ADR 015 del repo KMP); su PR queda encadenado al #22.
 
 ## Orden de ataque sugerido
 

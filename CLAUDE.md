@@ -4,7 +4,7 @@ Carpeta de trabajo local (no es un repo). Contiene cuatro repos independientes: 
 
 ## Antes de trabajar
 
-1. Leer `Documentacion/decisiones.md`: decisiones tomadas, propuestas y preguntas abiertas.
+1. Leer `Documentacion/decisiones.md` (decisiones generales y preguntas abiertas) y los ADR de `docs/decisiones/` del repo en el que se va a trabajar.
 2. Los contratos externos estan en `INTEGRATION_REFERENCE-v2.md`; el alcance en `PROJECT_STATEMENT-v1.md`.
 3. Contratos y diagramas vigentes: en `docs/` de cada servicio (`arquitectura.md`, `modelo-de-datos.md`, `contrato.md`...). En `Documentacion/diagramas/` queda solo el borrador de casos de uso (`06`).
 4. Usar la skill `hexagonal` para todo codigo backend (vive en `Documentacion/.claude/skills/hexagonal`; `.claude/skills/hexagonal` es un enlace simbolico).
@@ -17,7 +17,7 @@ Carpeta de trabajo local (no es un repo). Contiene cuatro repos independientes: 
 
 ## Regla de documentacion
 
-Toda decision, cambio de diseño o pregunta abierta que surja en la conversacion se registra **en el momento** en `Documentacion/decisiones.md` y, si afecta un diagrama o un contrato, se actualiza el del servicio. La documentacion vive en el repo `Documentacion` para que quede en GitHub. No hacer commit ni push sin que el usuario lo pida.
+Toda decision, cambio de diseño o pregunta abierta que surja en la conversacion se registra **en el momento**. Las decisiones de un proyecto (los dos servicios y la app KMP) van como ADR numerado en `docs/decisiones/` de su repo, con su entrada en el indice; `Documentacion/decisiones.md` guarda solo lo general (organizacion, entorno, preferencias de trabajo) y las preguntas abiertas. Si una decision afecta un diagrama o un contrato, se actualiza el del servicio. La documentacion vive en el repo `Documentacion` para que quede en GitHub. No hacer commit ni push sin que el usuario lo pida.
 
 ## Git
 
